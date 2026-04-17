@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://18m40cw1xsic"]
+
+[node name="MapLine" type="Line2D" unique_id=1161833265]
+texture_repeat = 1
+texture_mode = 1

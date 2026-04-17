@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://blv73idgl2vr5"]
+
+[ext_resource type="Script" uid="uid://dwqu1gls6awv" path="res://scripts/MapGenerator.cs" id="1_4rr3d"]
+[ext_resource type="Script" uid="uid://derkdflan077n" path="res://scripts/Map.cs" id="1_d6mms"]
+[ext_resource type="PackedScene" uid="uid://0xam6inh7p1w" path="res://scenes/Map/map_room.tscn" id="2_exngo"]
+
+[sub_resource type="Gradient" id="Gradient_exngo"]
+colors = PackedColorArray(0.21568628, 0.21568628, 0.21568628, 1, 0.4, 0.21960784, 0.20392157, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2rm8l"]
+gradient = SubResource("Gradient_exngo")
+width = 50
+
+[node name="Map" type="Node2D" unique_id=74220101]
+script = ExtResource("1_d6mms")
+MapRoomScene = ExtResource("2_exngo")
+
+[node name="Visuals" type="Node2D" parent="." unique_id=809049232]
+
+[node name="Lines" type="Node2D" parent="Visuals" unique_id=1209236567]
+unique_name_in_owner = true
+
+[node name="Rooms" type="Node2D" parent="Visuals" unique_id=1857066146]
+unique_name_in_owner = true
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=650150078]
+offset = Vector2(576, 325)
+
+[node name="MapGenerator" type="Node" parent="." unique_id=1040958756]
+script = ExtResource("1_4rr3d")
+
+[node name="MapBackground" type="CanvasLayer" parent="." unique_id=2035308344]
+layer = -1
+
+[node name="Background" type="TextureRect" parent="MapBackground" unique_id=51919310]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_2rm8l")

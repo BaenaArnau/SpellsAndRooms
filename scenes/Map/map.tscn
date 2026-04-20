@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://blv73idgl2vr5"]
 
-[ext_resource type="Script" uid="uid://dwqu1gls6awv" path="res://scripts/MapGenerator.cs" id="1_4rr3d"]
-[ext_resource type="Script" uid="uid://derkdflan077n" path="res://scripts/Map.cs" id="1_d6mms"]
+[ext_resource type="Script" uid="uid://dwqu1gls6awv" path="res://scripts/map/MapGenerator.cs" id="1_4rr3d"]
+[ext_resource type="Script" uid="uid://derkdflan077n" path="res://scripts/map/Map.cs" id="1_d6mms"]
 [ext_resource type="PackedScene" uid="uid://0xam6inh7p1w" path="res://scenes/Map/map_room.tscn" id="2_exngo"]
+[ext_resource type="PackedScene" uid="uid://18m40cw1xsic" path="res://scenes/Map/map_line.tscn" id="3_15h2t"]
 
 [sub_resource type="Gradient" id="Gradient_exngo"]
 colors = PackedColorArray(0.21568628, 0.21568628, 0.21568628, 1, 0.4, 0.21960784, 0.20392157, 1)
@@ -14,6 +15,8 @@ width = 50
 [node name="Map" type="Node2D" unique_id=74220101]
 script = ExtResource("1_d6mms")
 MapRoomScene = ExtResource("2_exngo")
+MapLineScene = ExtResource("3_15h2t")
+MapZoom = 3.0
 
 [node name="Visuals" type="Node2D" parent="." unique_id=809049232]
 

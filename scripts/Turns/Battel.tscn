@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dvx03turncg0t"]
+
+[ext_resource type="Script" path="res://scripts/Turns/BattleScene.cs" id="1_0jc4l"]
+
+[node name="Battel" type="Node" unique_id=1914041341]
+script = ExtResource("1_0jc4l")

@@ -1,5 +1,10 @@
 [gd_scene format=3 uid="uid://18m40cw1xsic"]
 
+[ext_resource type="Texture2D" uid="uid://e3dw1gcsdbmo" path="res://assets/Map/lineaDiscontinue.png" id="1_yw4uo"]
+
 [node name="MapLine" type="Line2D" unique_id=1161833265]
+texture_filter = 1
 texture_repeat = 1
+width = 2.5
+texture = ExtResource("1_yw4uo")
 texture_mode = 1

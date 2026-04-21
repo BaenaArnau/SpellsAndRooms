@@ -1,0 +1,5 @@
+name,health,mana,damage,damageResistance,damageWeakness,dificulty,loot,skill1,skill2,skill3,skill4,
+Goblin,30,10,5,0.1,0.2,1,null,null,null,null,null,
+Skeleton,20,0,10,0.2,0.1,2,Pyro,null,null,null,null,
+Slime,50,20,15,0.3,0.4,3,Aqua,Earthquake,null,null,null,
+BlackThing,100,50,20,0.5,0.6,4,Agua,Pyro,Earthquake,Destroyer,Cure,

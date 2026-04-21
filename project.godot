@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="TerceraJAM"
+config/name="Spells&Rooms"
+run/main_scene="uid://blv73idgl2vr5"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 

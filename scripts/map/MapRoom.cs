@@ -7,24 +7,24 @@ namespace TerceraJAM.scripts.map
         [Signal] public delegate void SelectedEventHandler(Room room);
         [Export] public float RoomScale = 0.34f;
         [Export] public float IconScale = 0.38f;
+        [Export] public AnimatedSprite2D Icon;
 
-        private Sprite2D _sprite;
         private Line2D _outline;
         private AnimationPlayer _anim;
         private bool _available;
         private Room _roomData;
         private Label _label;
-        private Color _baseColor = Colors.White;
         public override void _Ready() 
         {
-            _sprite = GetNode<Sprite2D>("Visual/Sprite2D");
+            Icon = GetNode<AnimatedSprite2D>("Visual/Icon");
             _outline = GetNodeOrNull<Line2D>("Visual/Line2D");
             _anim = GetNode<AnimationPlayer>("AnimationPlayer");
             Scale = Vector2.One * RoomScale;
 
-            if (_sprite != null)
+            if (Icon != null)
             {
-                _sprite.Scale = Vector2.One * IconScale;
+                Icon.Scale = Vector2.One * IconScale;
+                _outline.Scale = Vector2.One * (IconScale);
             }
             
             // Intentar obtener label si existe (para depuración)
@@ -48,8 +48,10 @@ namespace TerceraJAM.scripts.map
                 _label.Text = room.Type.ToString()[0].ToString();
             }
             
-            // El icono base (placeholder) cambia color según tipo de sala.
-            _baseColor = GetColorForRoomType(room.Type);
+            if (Icon != null)
+            {
+                Icon.Frame = GetFrameForRoomType(room.Type);
+            }
             ApplyAvailabilityVisuals();
         }
 
@@ -77,10 +79,10 @@ namespace TerceraJAM.scripts.map
 
         private void ApplyAvailabilityVisuals()
         {
-            if (_sprite != null)
+            if (Icon != null)
             {
                 float alpha = _available ? 1.0f : 0.45f;
-                _sprite.Modulate = _baseColor with { A = alpha };
+                Icon.Modulate = new Color(1, 1, 1, alpha);
             }
 
             if (_outline != null)
@@ -114,16 +116,16 @@ namespace TerceraJAM.scripts.map
             }
         }
 
-        private Color GetColorForRoomType(Room.RoomType type)
+        private int GetFrameForRoomType(Room.RoomType type)
         {
             return type switch
             {
-                Room.RoomType.Monster => new Color(0.83f, 0.33f, 0.33f),
-                Room.RoomType.Treasure => new Color(0.93f, 0.78f, 0.22f),
-                Room.RoomType.Campfire => new Color(0.96f, 0.55f, 0.2f),
-                Room.RoomType.Shop => new Color(0.33f, 0.66f, 0.9f),
-                Room.RoomType.Boss => new Color(0.6f, 0.18f, 0.18f),
-                _ => new Color(0.55f, 0.55f, 0.55f)
+                Room.RoomType.Monster => 0,
+                Room.RoomType.Treasure => 3,
+                Room.RoomType.Campfire => 2,
+                Room.RoomType.Shop => 4,
+                Room.RoomType.Boss => 1,
+                _ => 0
             };
         }
     }

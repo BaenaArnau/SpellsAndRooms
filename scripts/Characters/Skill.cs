@@ -1,19 +1,25 @@
 using Godot;
-using System;
 
 namespace TerceraJAM.scripts.Characters
 {
-	public partial class Skill : Node
-    {
-    	// Called when the node enters the scene tree for the first time.
-    	public override void _Ready()
-    	{
-    	}
-    
-    	// Called every frame. 'delta' is the elapsed time since the previous frame.
-    	public override void _Process(double delta)
-    	{
-    	}
-    }
+	public class Skill
+	{
+		public string Name { get; }
+		public int ManaCost { get; }
+		public int Damage { get; }
+		public Character.DamageType DamageType { get; }
+		public bool MultiAttack { get; }
+		public bool IsHealing { get; }
+
+		public Skill(string name, int manaCost, int damage, Character.DamageType damageType, bool multiAttack = false, bool isHealing = false)
+		{
+			Name = string.IsNullOrWhiteSpace(name) ? "Attack" : name;
+			ManaCost = Mathf.Max(0, manaCost);
+			Damage = Mathf.Max(1, damage);
+			DamageType = damageType;
+			MultiAttack = multiAttack;
+			IsHealing = isHealing;
+		}
+	}
 }
 

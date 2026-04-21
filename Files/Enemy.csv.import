@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dokow7bfxifdk"
+
+[deps]
+
+files=["res://Files/Enemy.health.translation", "res://Files/Enemy.mana.translation", "res://Files/Enemy.damage.translation", "res://Files/Enemy.damageResistance.translation", "res://Files/Enemy.damageWeakness.translation", "res://Files/Enemy.dificulty.translation", "res://Files/Enemy.loot.translation", "res://Files/Enemy.skill1.translation", "res://Files/Enemy.skill2.translation", "res://Files/Enemy.skill3.translation", "res://Files/Enemy.skill4.translation"]
+
+source_file="res://Files/Enemy.csv"
+dest_files=["res://Files/Enemy.health.translation", "res://Files/Enemy.mana.translation", "res://Files/Enemy.damage.translation", "res://Files/Enemy.damageResistance.translation", "res://Files/Enemy.damageWeakness.translation", "res://Files/Enemy.dificulty.translation", "res://Files/Enemy.loot.translation", "res://Files/Enemy.skill1.translation", "res://Files/Enemy.skill2.translation", "res://Files/Enemy.skill3.translation", "res://Files/Enemy.skill4.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

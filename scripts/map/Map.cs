@@ -1,6 +1,8 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
+using TerceraJAM.scripts.Characters;
+using TerceraJAM.scripts.Turns;
 
 namespace TerceraJAM.scripts.map
 {
@@ -8,6 +10,7 @@ namespace TerceraJAM.scripts.map
     {
         [Export] public PackedScene MapRoomScene;
         [Export] public PackedScene MapLineScene;
+        [Export] public PackedScene BattleScenePacked;
         [Export(PropertyHint.Range, "1.0,3.0,0.05")] public float MapZoom = 1.7f;
         [Export] public float ScrollStep = 80.0f;
         [Export] public float ScrollSmoothness = 10.0f;
@@ -25,6 +28,11 @@ namespace TerceraJAM.scripts.map
         private float _minVisualY;
         private float _maxVisualY;
         private float _targetVisualY;
+        private Player _player;
+        private EnemyDatabase _enemyDatabase;
+        private EncounterDirector _encounterDirector;
+        private bool _isInBattle;
+        private Room _pendingCombatRoom;
 
         public override void _Ready()
         {
@@ -43,12 +51,40 @@ namespace TerceraJAM.scripts.map
             _linesContainer = GetNodeOrNull<Node2D>("%Lines") ?? this;
             _visualsContainer = GetNodeOrNull<Node2D>("Visuals") ?? this;
 
+            if (BattleScenePacked == null)
+            {
+                BattleScenePacked = ResourceLoader.Load<PackedScene>("res://scripts/Turns/Battel.tscn");
+            }
+
             if (_visualsContainer != null)
             {
                 _visualsContainer.Scale = Vector2.One * MapZoom;
             }
 
+            SetupCombatSystems();
+
             GenerateAndDisplayMap();
+        }
+
+        private void SetupCombatSystems()
+        {
+            _player = new Player(
+                "Heroe",
+                110,
+                110,
+                45,
+                45,
+                12,
+                Character.DamageType.Earth,
+                Character.DamageType.Water);
+
+            _player.AddSkill(new Skill("Pyro", 8, 16, Character.DamageType.Fire));
+            _player.AddSkill(new Skill("Aqua", 7, 15, Character.DamageType.Water));
+            _player.AddSkill(new Skill("Earthquake", 9, 18, Character.DamageType.Earth));
+            _player.AddSkill(new Skill("Curar", 10, 20, Character.DamageType.Physical, false, true));
+
+            _enemyDatabase = new EnemyDatabase();
+            _encounterDirector = new EncounterDirector(_enemyDatabase);
         }
 
         private void GenerateAndDisplayMap()
@@ -278,9 +314,84 @@ namespace TerceraJAM.scripts.map
 
         private void OnRoomSelected(Room selectedRoom)
         {
+            if (_isInBattle)
+            {
+                return;
+            }
+
             _selectedRoom = selectedRoom;
             GD.Print($"Habitación seleccionada: {selectedRoom}");
 
+            if (selectedRoom.Type == Room.RoomType.Monster || selectedRoom.Type == Room.RoomType.Boss)
+            {
+                StartCombat(selectedRoom);
+                return;
+            }
+
+            AdvanceMapRoute(selectedRoom);
+        }
+
+        private void StartCombat(Room selectedRoom)
+        {
+            if (_player == null || !_player.IsAlive)
+            {
+                GD.PrintErr("El jugador no puede iniciar combate.");
+                return;
+            }
+
+            if (BattleScenePacked == null)
+            {
+                GD.PrintErr("No hay escena de batalla asignada.");
+                return;
+            }
+
+            List<Enemy> encounter = _encounterDirector.BuildEncounter(selectedRoom);
+            if (encounter.Count == 0)
+            {
+                GD.PrintErr("No se pudo generar el encuentro.");
+                AdvanceMapRoute(selectedRoom);
+                return;
+            }
+
+            Node battleInstance = BattleScenePacked.Instantiate();
+            if (battleInstance is not BattleScene battleScene)
+            {
+                GD.PrintErr("La escena de batalla no usa BattleScene.cs.");
+                battleInstance.QueueFree();
+                return;
+            }
+
+            _isInBattle = true;
+            _pendingCombatRoom = selectedRoom;
+            AddChild(battleScene);
+            battleScene.BattleFinished += OnBattleFinished;
+            battleScene.StartBattle(_player, encounter);
+        }
+
+        private void OnBattleFinished(bool playerWon, int earnedGold)
+        {
+            _isInBattle = false;
+            GD.Print(playerWon
+                ? $"Combate ganado. Oro: {earnedGold}."
+                : "Combate perdido.");
+
+            if (!playerWon)
+            {
+                _availableRooms.Clear();
+                UpdateAllRoomAvailability();
+                return;
+            }
+
+            if (_pendingCombatRoom != null)
+            {
+                AdvanceMapRoute(_pendingCombatRoom);
+            }
+
+            _pendingCombatRoom = null;
+        }
+
+        private void AdvanceMapRoute(Room selectedRoom)
+        {
             // Limpiar disponibilidad anterior
             _availableRooms.Clear();
 

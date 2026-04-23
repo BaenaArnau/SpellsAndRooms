@@ -328,7 +328,7 @@ namespace SpellsAndRooms.scripts.Turns
                     _player.GetParent().RemoveChild(_player);
 
                 _battleField.AddChild(_player);
-                _battleField.CallDeferred(nameof(_battleField.MoveChild), _player, 0);
+                _battleField.MoveChild(_player, 0);
                 
                 if (_player is AnimatedSprite2D playerAnimated)
                 {

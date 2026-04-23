@@ -82,4 +82,4 @@ CharacterName = "Oathbreakers"
 BaseHealth = 80
 BaseMana = 30
 Damage = 10
-DamageResistance = 4
+DamageResistance = 3

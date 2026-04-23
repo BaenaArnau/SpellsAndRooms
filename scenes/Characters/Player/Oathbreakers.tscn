@@ -75,12 +75,12 @@ animations = [{
 [node name="Oathbreakers" type="AnimatedSprite2D" unique_id=1997738457]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_1xss4")
-animation = &"Idle"
+animation = &"Attack"
 autoplay = "Idle"
 script = ExtResource("2_j6agc")
 CharacterName = "Oathbreakers"
 BaseHealth = 80
 BaseMana = 30
-Damage = 15
+Damage = 10
 DamageResistance = 3
 DamageWeakness = 4

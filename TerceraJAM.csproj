@@ -4,11 +4,4 @@
     <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="scripts\Characters\" />
-    <Folder Include="scripts\Items\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Files\Enemy.csv" />
-  </ItemGroup>
 </Project>

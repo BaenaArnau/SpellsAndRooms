@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-namespace TerceraJAM.scripts.Items
+namespace SpellsAndRooms.scripts.Items
 {
 	public partial class ConsumableItem : Node
 	{

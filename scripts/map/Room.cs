@@ -2,7 +2,7 @@ using Godot;
 using Godot.Collections;
 
 
-namespace TerceraJAM.scripts.map
+namespace SpellsAndRooms.scripts.map
 {
     public partial class Room : Resource
     {

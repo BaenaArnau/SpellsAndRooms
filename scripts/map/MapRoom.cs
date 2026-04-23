@@ -1,6 +1,6 @@
 using Godot;
 
-namespace TerceraJAM.scripts.map
+namespace SpellsAndRooms.scripts.map
 {
     public partial class MapRoom : Area2D
     {

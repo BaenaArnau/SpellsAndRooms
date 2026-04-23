@@ -1,10 +1,10 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
-using TerceraJAM.scripts.Characters;
-using TerceraJAM.scripts.Turns;
+using SpellsAndRooms.scripts.Characters;
+using SpellsAndRooms.scripts.Turns;
 
-namespace TerceraJAM.scripts.map
+namespace SpellsAndRooms.scripts.map
 {
     public partial class Map : Node2D
     {
@@ -33,6 +33,8 @@ namespace TerceraJAM.scripts.map
         private EncounterDirector _encounterDirector;
         private bool _isInBattle;
         private Room _pendingCombatRoom;
+        private const string BattleScenePath = "res://scenes/Turns/Battel.tscn";
+        private const string LegacyBattleScenePath = "res://scripts/Turns/Battel.tscn";
 
         public override void _Ready()
         {
@@ -53,7 +55,13 @@ namespace TerceraJAM.scripts.map
 
             if (BattleScenePacked == null)
             {
-                BattleScenePacked = ResourceLoader.Load<PackedScene>("res://scripts/Turns/Battel.tscn");
+                BattleScenePacked = ResourceLoader.Load<PackedScene>(BattleScenePath)
+                    ?? ResourceLoader.Load<PackedScene>(LegacyBattleScenePath);
+
+                if (BattleScenePacked == null)
+                {
+                    GD.PrintErr($"No se pudo cargar la escena de batalla en '{BattleScenePath}' ni en '{LegacyBattleScenePath}'.");
+                }
             }
 
             if (_visualsContainer != null)
@@ -430,5 +438,4 @@ namespace TerceraJAM.scripts.map
         }
     }
 }
-
 

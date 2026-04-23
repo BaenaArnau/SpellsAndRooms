@@ -1,6 +1,6 @@
-using TerceraJAM.scripts.Characters;
+using SpellsAndRooms.scripts.Characters;
 
-namespace TerceraJAM.scripts.Turns
+namespace SpellsAndRooms.scripts.Turns
 {
     public sealed class EnemyTemplate
     {

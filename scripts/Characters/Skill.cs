@@ -1,6 +1,6 @@
 using Godot;
 
-namespace TerceraJAM.scripts.Characters
+namespace SpellsAndRooms.scripts.Characters
 {
 	public class Skill
 	{

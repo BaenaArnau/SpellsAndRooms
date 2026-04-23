@@ -2,10 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TerceraJAM.scripts.Characters;
-using TerceraJAM.scripts.map;
+using SpellsAndRooms.scripts.Characters;
+using SpellsAndRooms.scripts.map;
 
-namespace TerceraJAM.scripts.Turns
+namespace SpellsAndRooms.scripts.Turns
 {
     public sealed class EncounterDirector
     {

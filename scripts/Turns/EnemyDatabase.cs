@@ -2,9 +2,9 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using TerceraJAM.scripts.Characters;
+using SpellsAndRooms.scripts.Characters;
 
-namespace TerceraJAM.scripts.Turns
+namespace SpellsAndRooms.scripts.Turns
 {
     public sealed class EnemyDatabase
     {

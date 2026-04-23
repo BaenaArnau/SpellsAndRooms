@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 
 
-namespace TerceraJAM.scripts.Characters
+namespace SpellsAndRooms.scripts.Characters
 {
 	public abstract partial class Character : Sprite2D
 	{

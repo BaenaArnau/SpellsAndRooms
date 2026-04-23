@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TerceraJAM.scripts.Turns
+namespace SpellsAndRooms.scripts.Turns
 {
     public sealed class BattleResult
     {

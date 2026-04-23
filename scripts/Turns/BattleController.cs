@@ -14,26 +14,20 @@ namespace SpellsAndRooms.scripts.Turns
         public string PlayerBasicAttack(Player player, Enemy target)
         {
             if (player == null || target == null || !target.IsAlive)
-            {
                 return "Objetivo invalido.";
-            }
 
             int applied = target.CalculateAdjustedDamage(player.Damage, Character.DamageType.Physical);
             target.TakeDamage(applied);
             return $"{player.CharacterName} ataca a {target.CharacterName} por {applied} (vida restante: {target.Health}).";
         }
 
-        public string PlayerUseSkill(Player player, Skill skill, Enemy target = null)
+        public string PlayerUseSkill(Player player, Skill skill, Enemy target = null, List<Enemy> enemies = null)
         {
             if (player == null || skill == null)
-            {
                 return "Accion invalida.";
-            }
 
             if (!player.ConsumeMana(skill.ManaCost))
-            {
                 return $"{player.CharacterName} no tiene mana para {skill.Name}.";
-            }
 
             if (skill.IsHealing)
             {
@@ -41,10 +35,21 @@ namespace SpellsAndRooms.scripts.Turns
                 return $"{player.CharacterName} usa {skill.Name} y se cura {skill.Damage} (vida: {player.Health}).";
             }
 
-            if (target == null || !target.IsAlive)
+            if (skill.MultiAttack && enemies != null && enemies.Any(e => e != null && e.IsAlive))
             {
-                return "No hay objetivo valido para la habilidad.";
+                var logs = new List<string>();
+                foreach (Enemy enemy in enemies.Where(e => e != null && e.IsAlive))
+                {
+                    int applied = enemy.CalculateAdjustedDamage(skill.Damage + player.Damage / 2, skill.DamageType);
+                    enemy.TakeDamage(applied);
+                    logs.Add($"{player.CharacterName} usa {skill.Name} sobre {enemy.CharacterName}: {applied} dano. Vida objetivo: {enemy.Health}.");
+                }
+
+                return string.Join("\n", logs);
             }
+
+            if (target == null || !target.IsAlive)
+                return "No hay objetivo valido para la habilidad.";
 
             return ApplySkill(player, target, skill);
         }
@@ -60,9 +65,7 @@ namespace SpellsAndRooms.scripts.Turns
             foreach (Enemy enemy in enemies)
             {
                 if (!enemy.IsAlive || !player.IsAlive)
-                {
                     continue;
-                }
 
                 Skill skill = enemy.Skills.FirstOrDefault(s => enemy.Mana >= s.ManaCost && (!s.IsHealing || enemy.Health < enemy.BaseHealth / 2));
                 if (skill != null && enemy.ConsumeMana(skill.ManaCost))
@@ -87,9 +90,7 @@ namespace SpellsAndRooms.scripts.Turns
             bool won = player != null && player.IsAlive && (enemies == null || enemies.All(e => !e.IsAlive));
 
             if (won)
-            {
                 player.AddGold(gold);
-            }
 
             return new BattleResult
             {
@@ -116,14 +117,10 @@ namespace SpellsAndRooms.scripts.Turns
                 foreach (Enemy enemy in enemies)
                 {
                     if (!player.IsAlive)
-                    {
                         break;
-                    }
 
                     if (!enemy.IsAlive)
-                    {
                         continue;
-                    }
 
                     result.Log.AddRange(ExecuteEnemyTurn(enemies, player));
                     break;
@@ -151,14 +148,24 @@ namespace SpellsAndRooms.scripts.Turns
         {
             Enemy target = enemies.FirstOrDefault(e => e.IsAlive);
             if (target == null)
-            {
                 return;
-            }
 
             Skill chosenSkill = ChooseBestSkill(player, target);
             if (chosenSkill != null && player.ConsumeMana(chosenSkill.ManaCost))
             {
-                log.Add(ApplySkill(player, target, chosenSkill));
+                if (chosenSkill.MultiAttack)
+                {
+                    log.Add($"{player.CharacterName} usa {chosenSkill.Name} contra todos los enemigos.");
+                    foreach (Enemy enemy in enemies.Where(e => e.IsAlive))
+                    {
+                        int areaDamage = enemy.CalculateAdjustedDamage(chosenSkill.Damage + player.Damage / 2, chosenSkill.DamageType);
+                        enemy.TakeDamage(areaDamage);
+                        log.Add($"  -> {enemy.CharacterName} recibe {areaDamage} dano (vida restante: {enemy.Health}).");
+                    }
+                }
+                else
+                    log.Add(ApplySkill(player, target, chosenSkill));
+
                 return;
             }
 
@@ -172,6 +179,7 @@ namespace SpellsAndRooms.scripts.Turns
             return player.Skills
                 .Where(s => !s.IsHealing && player.Mana >= s.ManaCost)
                 .OrderByDescending(s => s.DamageType == target.DamageWeakness)
+                .ThenByDescending(s => s.MultiAttack)
                 .ThenByDescending(s => s.Damage)
                 .FirstOrDefault();
         }
@@ -207,7 +215,4 @@ namespace SpellsAndRooms.scripts.Turns
         }
     }
 }
-
-
-
 

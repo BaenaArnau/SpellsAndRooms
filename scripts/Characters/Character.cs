@@ -4,24 +4,25 @@ using System.Collections.Generic;
 
 namespace SpellsAndRooms.scripts.Characters
 {
-	public abstract partial class Character : Sprite2D
+	public abstract partial class Character : AnimatedSprite2D
 	{
 		public enum DamageType
 		{
 			Fire,
 			Water,
 			Earth,
-			Physical
+			Physical,
+			None
 		}
 
-		public string CharacterName { get; }
-		public int Health { get; private set; }
-		public int BaseHealth { get; }
-		public int Mana { get; private set; }
-		public int BaseMana { get; }
-		public int Damage { get; private set; }
-		public DamageType DamageResistance { get; }
-		public DamageType DamageWeakness { get; }
+		[Export] public string CharacterName;
+		[Export] public int BaseHealth;
+		public int Health;
+		[Export] public int BaseMana;
+		public int Mana;
+		[Export] public int Damage;
+		[Export] public DamageType DamageResistance;
+		[Export] public DamageType DamageWeakness;
 		public bool IsAlive => Health > 0;
 
 		private readonly List<Skill> _skills = new List<Skill>();
@@ -41,9 +42,7 @@ namespace SpellsAndRooms.scripts.Characters
 		{
 			int safeAmount = Mathf.Max(0, amount);
 			if (Mana < safeAmount)
-			{
 				return false;
-			}
 
 			Mana -= safeAmount;
 			return true;
@@ -58,13 +57,9 @@ namespace SpellsAndRooms.scripts.Characters
 		{
 			float multiplier = 1.0f;
 			if (incomingType == DamageWeakness)
-			{
 				multiplier = 1.5f;
-			}
 			else if (incomingType == DamageResistance)
-			{
 				multiplier = 0.6f;
-			}
 
 			return Mathf.Max(1, Mathf.RoundToInt(amount * multiplier));
 		}
@@ -72,14 +67,10 @@ namespace SpellsAndRooms.scripts.Characters
 		public void AddSkill(Skill skill)
 		{
 			if (skill == null || _skills.Contains(skill))
-			{
 				return;
-			}
 
 			if (_skills.Count >= 4)
-			{
 				_skills.RemoveAt(0);
-			}
 
 			_skills.Add(skill);
 		}
@@ -87,9 +78,7 @@ namespace SpellsAndRooms.scripts.Characters
 		public void RemoveSkill(Skill skill)
 		{
 			if (skill == null)
-			{
 				return;
-			}
 
 			_skills.Remove(skill);
 		}

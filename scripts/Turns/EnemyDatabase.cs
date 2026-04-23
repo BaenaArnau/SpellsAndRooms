@@ -8,14 +8,32 @@ namespace SpellsAndRooms.scripts.Turns
 {
     public sealed class EnemyDatabase
     {
+        private readonly SkillDatabase _skillDatabase;
         private readonly List<EnemyTemplate> _templates = new List<EnemyTemplate>();
         private const string EnemyCsvPath = "res://Files/Enemy.csv";
 
+        private static readonly Dictionary<string, string> ScenePathByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["dark goblin"] = "res://scenes/Characters/Enemy/Goblin.tscn",
+            ["goblin"] = "res://scenes/Characters/Enemy/Goblin.tscn",
+            ["skeleton"] = "res://scenes/Characters/Enemy/Skeleton.tscn",
+            ["slime"] = "res://scenes/Characters/Enemy/Slime.tscn",
+            ["black thing"] = "res://scenes/Characters/Enemy/BlackThing.tscn",
+            ["blackthing"] = "res://scenes/Characters/Enemy/BlackThing.tscn"
+        };
+
         public IReadOnlyList<EnemyTemplate> Templates => _templates;
 
-        public EnemyDatabase()
+        public EnemyDatabase(SkillDatabase skillDatabase)
         {
+            _skillDatabase = skillDatabase ?? new SkillDatabase();
             LoadFromCsv();
+        }
+
+        public bool TryGetTemplate(string enemyName, out EnemyTemplate template)
+        {
+            template = _templates.Find(t => string.Equals(t.Name, enemyName, StringComparison.OrdinalIgnoreCase));
+            return template != null;
         }
 
         private void LoadFromCsv()
@@ -48,112 +66,80 @@ namespace SpellsAndRooms.scripts.Turns
                     continue;
                 }
 
-                string[] cols = line.Split(',');
-                if (cols.Length < 8)
+                List<string> cols = CsvUtils.SplitLine(line);
+                if (cols.Count == 0)
                 {
                     continue;
                 }
 
                 string name = cols[0].Trim();
-                int health = ParseInt(cols[1], 20);
-                int mana = ParseInt(cols[2], 0);
-                int damage = ParseInt(cols[3], 5);
-                Character.DamageType resistance = ParseDamageType(cols[4], Character.DamageType.Physical, name + "res");
-                Character.DamageType weakness = ParseDamageType(cols[5], Character.DamageType.Fire, name + "weak");
-                int difficulty = ParseInt(cols[6], 1);
-                int loot = ParseInt(cols[7], difficulty * 8);
-
-                var skills = new List<Skill>();
-                for (int i = 8; i <= 11 && i < cols.Length; i++)
+                if (string.IsNullOrWhiteSpace(name))
                 {
-                    Skill skill = BuildSkillFromName(cols[i].Trim(), damage);
-                    if (skill != null)
-                    {
-                        skills.Add(skill);
-                    }
+                    continue;
                 }
 
+                string scenePath = ResolveScenePath(name);
+                if (string.IsNullOrWhiteSpace(scenePath))
+                {
+                    GD.PrintErr($"No se encontro escena para el enemigo '{name}'.");
+                    continue;
+                }
+
+                PackedScene packedScene = ResourceLoader.Load<PackedScene>(scenePath);
+                if (packedScene == null)
+                {
+                    GD.PrintErr($"No se pudo cargar la escena de enemigo '{scenePath}'.");
+                    continue;
+                }
+
+                Enemy probe = packedScene.Instantiate<Enemy>();
+                if (probe == null)
+                {
+                    GD.PrintErr($"La escena '{scenePath}' no instancia un Enemy valido.");
+                    continue;
+                }
+
+                var skillNames = new List<string>();
+                for (int i = 1; i < cols.Count; i++)
+                {
+                    string skillName = cols[i].Trim();
+                    if (string.IsNullOrWhiteSpace(skillName) || skillName.Equals("null", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    skillNames.Add(skillName);
+                }
+
+                List<Skill> skills = _skillDatabase.ResolveSkills(skillNames);
                 if (skills.Count == 0)
                 {
-                    skills.Add(new Skill("Golpe", 0, damage, Character.DamageType.Physical));
+                    skills.Add(new Skill("Golpe", 0, Mathf.Max(1, probe.Damage), Character.DamageType.Physical));
                 }
 
                 _templates.Add(new EnemyTemplate
                 {
-                    Name = string.IsNullOrWhiteSpace(name) ? "Enemy" : name,
-                    Health = Mathf.Max(1, health),
-                    Mana = Mathf.Max(0, mana),
-                    Damage = Mathf.Max(1, damage),
-                    Difficulty = Mathf.Max(1, difficulty),
-                    Loot = Mathf.Max(1, loot),
-                    DamageResistance = resistance,
-                    DamageWeakness = weakness,
+                    Name = string.IsNullOrWhiteSpace(probe.CharacterName) ? name : probe.CharacterName,
+                    ScenePath = scenePath,
+                    Scene = packedScene,
+                    Difficulty = Mathf.Max(1, probe.Difficulty),
+                    Loot = Mathf.Max(0, probe.MoneyLoot),
                     Skills = skills.ToArray()
                 });
+
+                probe.Free();
             }
         }
 
-        private static Skill BuildSkillFromName(string rawName, int baseDamage)
+        private static string ResolveScenePath(string enemyName)
         {
-            if (string.IsNullOrWhiteSpace(rawName) || rawName.Equals("null", StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-
-            string name = rawName.Trim();
-            bool isHealing = name.Equals("Cure", StringComparison.OrdinalIgnoreCase);
-            Character.DamageType type = ParseDamageType(name, Character.DamageType.Physical, name);
-            int manaCost = Mathf.Clamp(baseDamage / 4, 0, 15);
-            int power = isHealing ? Mathf.Max(4, baseDamage / 2) : Mathf.Max(4, baseDamage + 3);
-
-            return new Skill(name, manaCost, power, type, false, isHealing);
+            string key = Normalize(enemyName);
+            return ScenePathByName.TryGetValue(key, out string scenePath) ? scenePath : string.Empty;
         }
 
-        private static Character.DamageType ParseDamageType(string value, Character.DamageType fallback, string seed)
+        private static string Normalize(string value)
         {
-            string normalized = (value ?? string.Empty).Trim();
-            if (string.IsNullOrWhiteSpace(normalized) || normalized.Equals("null", StringComparison.OrdinalIgnoreCase))
-            {
-                return fallback;
-            }
-
-            if (Enum.TryParse(normalized, true, out Character.DamageType parsed))
-            {
-                return parsed;
-            }
-
-            string lowered = normalized.ToLowerInvariant();
-            if (lowered.Contains("fire") || lowered.Contains("pyro"))
-            {
-                return Character.DamageType.Fire;
-            }
-            if (lowered.Contains("water") || lowered.Contains("aqua") || lowered.Contains("agua"))
-            {
-                return Character.DamageType.Water;
-            }
-            if (lowered.Contains("earth") || lowered.Contains("terra") || lowered.Contains("tierra"))
-            {
-                return Character.DamageType.Earth;
-            }
-
-            if (float.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out float numeric))
-            {
-                int index = Mathf.Abs(Mathf.RoundToInt(numeric * 10.0f) + seed.GetHashCode()) % 4;
-                return (Character.DamageType)index;
-            }
-
-            return fallback;
-        }
-
-        private static int ParseInt(string value, int fallback)
-        {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed))
-            {
-                return parsed;
-            }
-
-            return fallback;
+            return (value ?? string.Empty).Trim();
         }
     }
 }
-

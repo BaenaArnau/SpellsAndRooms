@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://c4tc50ol28qi8"]
+
+[ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="1_580nj"]
+[ext_resource type="Texture2D" uid="uid://74p06by4sr6i" path="res://assets/Characters/Enemy/Slime.png" id="1_db02x"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2m1j5"]
+atlas = ExtResource("1_db02x")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jsrme"]
+atlas = ExtResource("1_db02x")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_db02x"]
+atlas = ExtResource("1_db02x")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_db02x"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2m1j5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jsrme")
+}],
+"loop": false,
+"name": &"Attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_db02x")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="Slime" type="AnimatedSprite2D" unique_id=595613690]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_db02x")
+animation = &"Idle"
+autoplay = "Idle"
+script = ExtResource("1_580nj")
+Difficulty = 3
+MoneyLoot = 25
+CharacterName = "Slime"
+BaseHealth = 50
+BaseMana = 20
+Damage = 15
+DamageResistance = 3
+DamageWeakness = 2

@@ -29,10 +29,12 @@ namespace SpellsAndRooms.scripts.map
         private float _maxVisualY;
         private float _targetVisualY;
         private Player _player;
+        private SkillDatabase _skillDatabase;
         private EnemyDatabase _enemyDatabase;
         private EncounterDirector _encounterDirector;
         private bool _isInBattle;
         private Room _pendingCombatRoom;
+        private const string PlayerScenePath = "res://scenes/Characters/Player/Oathbreakers.tscn";
         private const string BattleScenePath = "res://scenes/Turns/Battel.tscn";
         private const string LegacyBattleScenePath = "res://scripts/Turns/Battel.tscn";
 
@@ -45,9 +47,7 @@ namespace SpellsAndRooms.scripts.map
             }
 
             if (MapLineScene == null)
-            {
                 GD.PrintErr("MapLineScene no está asignada en el inspector");
-            }
 
             _roomsContainer = GetNodeOrNull<Node2D>("%Rooms") ?? this;
             _linesContainer = GetNodeOrNull<Node2D>("%Lines") ?? this;
@@ -59,15 +59,11 @@ namespace SpellsAndRooms.scripts.map
                     ?? ResourceLoader.Load<PackedScene>(LegacyBattleScenePath);
 
                 if (BattleScenePacked == null)
-                {
                     GD.PrintErr($"No se pudo cargar la escena de batalla en '{BattleScenePath}' ni en '{LegacyBattleScenePath}'.");
-                }
             }
 
             if (_visualsContainer != null)
-            {
                 _visualsContainer.Scale = Vector2.One * MapZoom;
-            }
 
             SetupCombatSystems();
 
@@ -76,23 +72,40 @@ namespace SpellsAndRooms.scripts.map
 
         private void SetupCombatSystems()
         {
-            _player = new Player(
-                "Heroe",
-                110,
-                110,
-                45,
-                45,
-                12,
-                Character.DamageType.Earth,
-                Character.DamageType.Water);
-
-            _player.AddSkill(new Skill("Pyro", 8, 16, Character.DamageType.Fire));
-            _player.AddSkill(new Skill("Aqua", 7, 15, Character.DamageType.Water));
-            _player.AddSkill(new Skill("Earthquake", 9, 18, Character.DamageType.Earth));
-            _player.AddSkill(new Skill("Curar", 10, 20, Character.DamageType.Physical, false, true));
-
-            _enemyDatabase = new EnemyDatabase();
+            _skillDatabase = new SkillDatabase();
+            _enemyDatabase = new EnemyDatabase(_skillDatabase);
             _encounterDirector = new EncounterDirector(_enemyDatabase);
+
+            PackedScene playerScene = ResourceLoader.Load<PackedScene>(PlayerScenePath);
+            if (playerScene != null)
+            {
+                _player = playerScene.Instantiate<Player>();
+            }
+
+            if (_player == null)
+            {
+                _player = new Player(
+                    "Heroe",
+                    110,
+                    110,
+                    45,
+                    45,
+                    12,
+                    Character.DamageType.Earth,
+                    Character.DamageType.Water);
+            }
+
+            _player.Health = _player.BaseHealth;
+            _player.Mana = _player.BaseMana;
+
+            string[] startingSkills = { "Pyro", "Aqua", "Earthquake", "Cure" };
+            foreach (string skillName in startingSkills)
+            {
+                if (_skillDatabase.TryGetSkill(skillName, out Skill skill))
+                {
+                    _player.AddSkill(skill);
+                }
+            }
         }
 
         private void GenerateAndDisplayMap()
@@ -106,9 +119,7 @@ namespace SpellsAndRooms.scripts.map
             foreach (Room room in _mapData[0])
             {
                 if (_connectedRooms.Contains(room) && room.NextRooms.Count > 0)
-                {
                     startingRooms.Add(room);
-                }
             }
 
             _availableRooms = startingRooms;
@@ -120,9 +131,7 @@ namespace SpellsAndRooms.scripts.map
                 {
                     Room room = _mapData[i][j];
                     if (!_connectedRooms.Contains(room))
-                    {
                         continue;
-                    }
 
                     MapRoom mapRoom = MapRoomScene.Instantiate<MapRoom>();
                     mapRoom.SetRoom(room);
@@ -169,16 +178,12 @@ namespace SpellsAndRooms.scripts.map
                 foreach (Room room in floor)
                 {
                     if (!_connectedRooms.Contains(room))
-                    {
                         continue;
-                    }
 
                     foreach (Room nextRoom in room.NextRooms)
                     {
                         if (!_connectedRooms.Contains(nextRoom))
-                        {
                             continue;
-                        }
 
                         Line2D line = CreateConnectionLine();
                         line.AddPoint(room.Position);
@@ -195,9 +200,7 @@ namespace SpellsAndRooms.scripts.map
             {
                 Node instance = MapLineScene.Instantiate();
                 if (instance is Line2D sceneLine)
-                {
                     return sceneLine;
-                }
 
                 GD.PrintErr("MapLineScene no instancia un Line2D. Se usará línea por defecto.");
             }
@@ -214,9 +217,7 @@ namespace SpellsAndRooms.scripts.map
         private void SetupScrollView()
         {
             if (_roomToMapRoom.Count == 0)
-            {
                 return;
-            }
 
             bool initialized = false;
             Vector2 min = Vector2.Zero;
@@ -271,9 +272,7 @@ namespace SpellsAndRooms.scripts.map
         public override void _Process(double delta)
         {
             if (_visualsContainer == null)
-            {
                 return;
-            }
 
             float t = Mathf.Clamp((float)delta * ScrollSmoothness, 0.0f, 1.0f);
             _visualsContainer.Position = new Vector2(
@@ -299,13 +298,9 @@ namespace SpellsAndRooms.scripts.map
             }
 
             if (@event.IsActionPressed("ui_up"))
-            {
                 ScrollBy(GetEffectiveScrollStep());
-            }
             else if (@event.IsActionPressed("ui_down"))
-            {
                 ScrollBy(-GetEffectiveScrollStep());
-            }
         }
 
         private float GetEffectiveScrollStep()
@@ -323,9 +318,7 @@ namespace SpellsAndRooms.scripts.map
         private void OnRoomSelected(Room selectedRoom)
         {
             if (_isInBattle)
-            {
                 return;
-            }
 
             _selectedRoom = selectedRoom;
             GD.Print($"Habitación seleccionada: {selectedRoom}");
@@ -371,6 +364,13 @@ namespace SpellsAndRooms.scripts.map
 
             _isInBattle = true;
             _pendingCombatRoom = selectedRoom;
+            
+            // Ocultar el mapa mientras está en batalla
+            if (_visualsContainer != null)
+            {
+                _visualsContainer.Visible = false;
+            }
+            
             AddChild(battleScene);
             battleScene.BattleFinished += OnBattleFinished;
             battleScene.StartBattle(_player, encounter);
@@ -383,6 +383,12 @@ namespace SpellsAndRooms.scripts.map
                 ? $"Combate ganado. Oro: {earnedGold}."
                 : "Combate perdido.");
 
+            // Mostrar el mapa nuevamente después de la batalla
+            if (_visualsContainer != null)
+            {
+                _visualsContainer.Visible = true;
+            }
+
             if (!playerWon)
             {
                 _availableRooms.Clear();
@@ -391,9 +397,7 @@ namespace SpellsAndRooms.scripts.map
             }
 
             if (_pendingCombatRoom != null)
-            {
                 AdvanceMapRoute(_pendingCombatRoom);
-            }
 
             _pendingCombatRoom = null;
         }

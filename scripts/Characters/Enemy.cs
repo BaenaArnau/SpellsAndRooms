@@ -5,8 +5,8 @@ namespace SpellsAndRooms.scripts.Characters
 {
     public partial class Enemy : Character
     {
-        public int Difficulty { get; }
-        public int MoneyLoot { get; }
+        [Export] public int Difficulty;
+        [Export] public int MoneyLoot;
 
         public Enemy() : base("Enemy", 1, 1, 0, 0, 1, DamageType.Physical, DamageType.Fire)
         {

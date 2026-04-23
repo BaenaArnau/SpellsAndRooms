@@ -1,6 +1,19 @@
 [gd_scene format=3 uid="uid://dvx03turncg0t"]
 
-[ext_resource type="Script" path="res://scripts/Turns/BattleScene.cs" id="1_0jc4l"]
+[ext_resource type="Script" uid="uid://dofua8tp3uc86" path="res://scripts/Turns/BattleScene.cs" id="1_0jc4l"]
+[ext_resource type="Texture2D" uid="uid://bsgot0t4hb3oi" path="res://assets/Turns/BattelBackground.png" id="2_0fy7g"]
 
-[node name="Battel" type="Node" unique_id=1914041341]
+[node name="Battel" type="Node2D" unique_id=375188729]
 script = ExtResource("1_0jc4l")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=269365550]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer" unique_id=989634679]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_0fy7g")
+expand_mode = 1

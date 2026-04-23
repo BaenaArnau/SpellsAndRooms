@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://bvap8c5er8qtf"]
+
+[ext_resource type="Texture2D" uid="uid://bl7rt2a1pdhte" path="res://assets/Characters/Player/MagoAzul.png" id="1_qjxyf"]
+[ext_resource type="Script" uid="uid://dw3c12gywkoyk" path="res://scripts/Characters/Player.cs" id="2_dyaac"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0x520"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfy02"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_upurq"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b7bdo"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(288, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1nwsn"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(384, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y6wly"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(480, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_30mdv"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(576, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ssp5w"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(672, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qjxyf"]
+atlas = ExtResource("1_qjxyf")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x1rou"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0x520")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfy02")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_upurq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b7bdo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1nwsn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y6wly")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_30mdv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ssp5w")
+}],
+"loop": false,
+"name": &"Attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qjxyf")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="Wizard" type="AnimatedSprite2D" unique_id=1607887041]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_x1rou")
+animation = &"Idle"
+autoplay = "Idle"
+script = ExtResource("2_dyaac")
+CharacterName = "Wizard"
+BaseHealth = 60
+BaseMana = 100
+Damage = 1
+DamageResistance = 1
+DamageWeakness = 3

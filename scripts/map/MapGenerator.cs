@@ -90,9 +90,7 @@ namespace SpellsAndRooms.scripts.map
                 if (!WouldCrossExistingPath(i, j, nextRoomCandidate))
                 {
                     if (!currentRoom.NextRooms.Contains(nextRoomCandidate))
-                    {
                         currentRoom.NextRooms.Add(nextRoomCandidate);
-                    }
                     return nextJ;
                 }
             }
@@ -100,9 +98,7 @@ namespace SpellsAndRooms.scripts.map
             // Plan de escape si todas las opciones válidas se bloquearon
             Room fallbackRoom = _mapData[i + 1][j];
             if (!currentRoom.NextRooms.Contains(fallbackRoom))
-            {
                 currentRoom.NextRooms.Add(fallbackRoom);
-            }
             return j;
         }
 
@@ -112,9 +108,7 @@ namespace SpellsAndRooms.scripts.map
 
             // Si no se mueve de columna, no puede cruzar otra ruta.
             if (Math.Abs(nextColumn - column) != 1)
-            {
                 return false;
-            }
 
             // Un cruce ocurre si la habitación adyacente ya apunta a la habitación opuesta.
             int adjacentColumn = nextColumn;
@@ -166,9 +160,7 @@ namespace SpellsAndRooms.scripts.map
             {
                 accumulatedWeight += entry.Value;
                 if (roll <= accumulatedWeight)
-                {
                     return entry.Key;
-                }
             }
 
             return Room.RoomType.Monster;

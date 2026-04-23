@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://derir0hs5iav6"]
+
+[ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="1_d108g"]
+[ext_resource type="Texture2D" uid="uid://b7wrwc3whi1td" path="res://assets/Characters/Enemy/Esqueleto.png" id="1_i1tv0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2iom"]
+atlas = ExtResource("1_i1tv0")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_60mcy"]
+atlas = ExtResource("1_i1tv0")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i1tv0"]
+atlas = ExtResource("1_i1tv0")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_i1tv0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2iom")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_60mcy")
+}],
+"loop": false,
+"name": &"Attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i1tv0")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="Skeleton" type="AnimatedSprite2D" unique_id=110120179]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_i1tv0")
+animation = &"Idle"
+autoplay = "Idle"
+script = ExtResource("1_d108g")
+Difficulty = 2
+MoneyLoot = 15
+CharacterName = "Skeleton"
+BaseHealth = 15
+Damage = 10
+DamageWeakness = 1

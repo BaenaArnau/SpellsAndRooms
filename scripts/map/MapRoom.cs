@@ -29,9 +29,7 @@ namespace SpellsAndRooms.scripts.map
             
             // Intentar obtener label si existe (para depuración)
             if (HasNode("Visual/Label"))
-            {
                 _label = GetNode<Label>("Visual/Label");
-            }
             
             // Conectar evento de entrada para detectar clicks
             InputEvent += OnInputEvent;
@@ -44,14 +42,10 @@ namespace SpellsAndRooms.scripts.map
             
             // Asignar el texto/icono según el tipo de habitación
             if (_label != null)
-            {
                 _label.Text = room.Type.ToString()[0].ToString();
-            }
             
             if (Icon != null)
-            {
                 Icon.Frame = GetFrameForRoomType(room.Type);
-            }
             ApplyAvailabilityVisuals();
         }
 
@@ -64,16 +58,12 @@ namespace SpellsAndRooms.scripts.map
             if (_available)
             {
                 if (_anim != null && _anim.GetAnimation("highlight") != null)
-                {
                     _anim.Play("highlight");
-                }
             }
             else
             {
                 if (_anim != null && _anim.CurrentAnimation == "highlight")
-                {
                     _anim.Play("RESET");
-                }
             }
         }
 
@@ -86,14 +76,10 @@ namespace SpellsAndRooms.scripts.map
             }
 
             if (_outline != null)
-            {
                 _outline.Modulate = _available ? new Color(1, 1, 1, 0.95f) : new Color(1, 1, 1, 0.25f);
-            }
 
             if (_label != null)
-            {
                 _label.Modulate = _available ? Colors.White : new Color(1, 1, 1, 0.55f);
-            }
         }
 
         private void OnInputEvent(Node viewport, InputEvent @event, long shapeIdx)
@@ -107,9 +93,7 @@ namespace SpellsAndRooms.scripts.map
                 
                 // Reproducir animación si existe
                 if (_anim != null && _anim.GetAnimation("select") != null)
-                {
                     _anim.Play("select");
-                }
                 
                 // Emitimos la señal para que el Map.cs sepa que fue elegida
                 EmitSignal(SignalName.Selected, _roomData);

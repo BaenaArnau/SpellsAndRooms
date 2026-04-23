@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://51xqg6yyu7a6"]
+
+[ext_resource type="Texture2D" uid="uid://dnpqq4ekda4wh" path="res://icon.svg" id="1_altb5"]
+[ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="2_rgmwg"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qak7y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_altb5")
+}],
+"loop": false,
+"name": &"Attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_altb5")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[node name="BlackThing" type="AnimatedSprite2D" unique_id=554901944]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_qak7y")
+animation = &"Idle"
+autoplay = "Idle"
+script = ExtResource("2_rgmwg")
+Difficulty = 4
+CharacterName = "Black Thing"
+BaseHealth = 100
+BaseMana = 50
+Damage = 20
+DamageResistance = 3
+DamageWeakness = 4

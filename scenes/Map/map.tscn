@@ -33,7 +33,7 @@ offset = Vector2(576, 325)
 script = ExtResource("1_4rr3d")
 
 [node name="MapBackground" type="CanvasLayer" parent="." unique_id=2035308344]
-layer = -1
+layer = -2
 
 [node name="Background" type="TextureRect" parent="MapBackground" unique_id=51919310]
 anchors_preset = 15

@@ -8,9 +8,12 @@
 [ext_resource type="PackedScene" uid="uid://csb3jibyjau2q" path="res://scenes/Interfaces/settings.tscn" id="5_je6uc"]
 
 [node name="menu_pausa" type="CanvasLayer" unique_id=700777700 node_paths=PackedStringArray("_settings")]
-process_mode = 2
+process_mode = 3
 script = ExtResource("1_im7n4")
 _settings = NodePath("Settings")
+
+[node name="Settings" parent="." unique_id=1413165098 instance=ExtResource("5_je6uc")]
+visible = false
 
 [node name="Pergamino" type="TextureRect" parent="." unique_id=1983698291]
 texture_filter = 1
@@ -28,31 +31,22 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_gehnc")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1042054934]
-z_index = -2
-custom_minimum_size = Vector2(500, 0)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.5803922)
-
-[node name="FondoTitulo" type="TextureRect" parent="." unique_id=1860857612]
+[node name="FondoTitulo" type="TextureRect" parent="Pergamino" unique_id=1860857612]
 z_index = 1
 texture_filter = 1
 custom_minimum_size = Vector2(800, 200)
+layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -400.0
-offset_top = 47.0
+offset_top = 48.0
 offset_right = 400.0
-offset_bottom = 247.0
+offset_bottom = 248.0
 grow_horizontal = 2
 texture = ExtResource("2_pwxya")
 
-[node name="Label" type="Label" parent="FondoTitulo" unique_id=1643316197]
+[node name="Label" type="Label" parent="Pergamino/FondoTitulo" unique_id=1643316197]
 z_index = 1
 texture_filter = 1
 custom_minimum_size = Vector2(300, 0)
@@ -72,6 +66,16 @@ theme_override_fonts/font = ExtResource("3_je6uc")
 theme_override_font_sizes/font_size = 70
 text = "PAUSED
 "
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1042054934]
+z_index = -2
+custom_minimum_size = Vector2(500, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5803922)
 
 [node name="HBoxContainer" type="VBoxContainer" parent="." unique_id=1196574295]
 texture_filter = 1
@@ -119,10 +123,6 @@ size_flags_vertical = 3
 theme = ExtResource("4_pwxya")
 text = "EXIT
 "
-
-[node name="Settings" parent="." unique_id=1413165098 instance=ExtResource("5_je6uc")]
-process_mode = 3
-visible = false
 
 [connection signal="pressed" from="HBoxContainer/Continue" to="." method="onContinuePressed"]
 [connection signal="pressed" from="HBoxContainer/Restart" to="." method="onRestartPressed"]

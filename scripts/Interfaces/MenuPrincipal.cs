@@ -17,16 +17,16 @@ public partial class MenuPrincipal : Control
 	public override void _Process(double delta)
 	{
 	}
-	public void onStartPressed()
+	private void onStartPressed()
 	{
 		GetTree().ChangeSceneToFile("res://scenes/Map/map.tscn");
 	}
-	public void onSettingPressed()
+	private void onSettingPressed()
     {
 		_settings.Visible = true;
     }
 
-	public void onExitPressed()
+	private void onExitPressed()
 	{
 		GetTree().Quit();
 	}

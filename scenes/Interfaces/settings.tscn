@@ -8,6 +8,8 @@
 [ext_resource type="FontFile" uid="uid://5lr8h01ai6yx" path="res://assets/font/upheaval/upheavtt.ttf" id="6_qevgg"]
 
 [node name="Settings" type="CanvasLayer" unique_id=1413165098]
+process_mode = 3
+layer = 2
 script = ExtResource("1_kkycx")
 
 [node name="Pergamino" type="TextureRect" parent="." unique_id=120368301]
@@ -25,6 +27,42 @@ offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_2oqtj")
+
+[node name="FondoTitulo" type="TextureRect" parent="Pergamino" unique_id=733636984]
+z_index = 1
+texture_filter = 1
+custom_minimum_size = Vector2(800, 200)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 48.0
+offset_right = 400.0
+offset_bottom = 248.0
+grow_horizontal = 2
+texture = ExtResource("5_r22wt")
+
+[node name="Label" type="Label" parent="Pergamino/FondoTitulo" unique_id=542484131]
+z_index = 1
+texture_filter = 1
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -131.0
+offset_right = 150.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(2.4065375e-08, 0.25036317, 0.28748178, 1)
+theme_override_fonts/font = ExtResource("6_qevgg")
+theme_override_font_sizes/font_size = 70
+text = "SETTING
+"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=173858953]
 custom_minimum_size = Vector2(700, 650)
@@ -121,40 +159,5 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource("3_4ts72")
 text = "APLICAR"
-
-[node name="FondoTitulo" type="TextureRect" parent="." unique_id=733636984]
-z_index = 1
-texture_filter = 1
-custom_minimum_size = Vector2(800, 200)
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -400.0
-offset_top = 47.0
-offset_right = 400.0
-offset_bottom = 247.0
-grow_horizontal = 2
-texture = ExtResource("5_r22wt")
-
-[node name="Label" type="Label" parent="FondoTitulo" unique_id=542484131]
-z_index = 1
-texture_filter = 1
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -131.0
-offset_right = 150.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(2.4065375e-08, 0.25036317, 0.28748178, 1)
-theme_override_fonts/font = ExtResource("6_qevgg")
-theme_override_font_sizes/font_size = 70
-text = "SETTING
-"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/Volver" to="." method="onVolverPressed"]

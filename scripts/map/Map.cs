@@ -15,6 +15,7 @@ namespace SpellsAndRooms.scripts.map
         [Export] public PackedScene ShopScenePacked;
         [Export] public PackedScene CampfireScenePacked;
         [Export] public PackedScene TreasureScenePacked;
+		[Export] private CanvasLayer _menuPausa;
         [Export(PropertyHint.Range, "1.0,3.0,0.05")] public float MapZoom = 1.7f;
         [Export] public float ScrollStep = 80.0f;
         [Export] public float ScrollSmoothness = 10.0f;
@@ -56,6 +57,9 @@ namespace SpellsAndRooms.scripts.map
 
         public override void _Ready()
         {
+            if(_menuPausa != null)
+                _menuPausa = GetNodeOrNull<CanvasLayer>("menu_pausa");
+
             if (MapRoomScene == null)
             {
                 GD.PrintErr("MapRoomScene no está asignada en el inspector");
@@ -769,6 +773,18 @@ namespace SpellsAndRooms.scripts.map
         public HashSet<Room> GetAvailableRooms()
         {
             return _availableRooms;
+        }
+
+		public override void _Input(InputEvent @event)
+        {
+            if (@event.IsActionPressed("pausa"))
+			{
+				if (_menuPausa != null)
+				{
+					GetTree().Paused = true;
+					_menuPausa.Visible = true;
+				}
+			}
         }
     }
 }

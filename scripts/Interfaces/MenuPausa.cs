@@ -9,6 +9,7 @@ public partial class MenuPausa : CanvasLayer
     {
         if(_settings != null)
 			_settings = GetNode<CanvasLayer>("Settings");
+		_settings.Visible = false;
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -23,16 +24,18 @@ public partial class MenuPausa : CanvasLayer
 
 	private void onRestartPressed()
 	{
-				GetTree().Paused = false;
-				GetTree().ChangeSceneToFile("res://scenes/Map/map.tscn");
+			GetTree().Paused = false;
+		GetTree().ChangeSceneToFile("res://scenes/Map/map.tscn");
 	}
 	private void onSettingPressed()
 	{
 		_settings.Visible = true;
+		GD.Print("enter Settings ", _settings.Visible);
 	}	
 	private void onExitPressed()
 	{
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile("res://scenes/Interfaces/menu_principal.tscn");
 	}
+
 }

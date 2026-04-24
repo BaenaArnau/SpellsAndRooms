@@ -11,6 +11,7 @@
     <Content Include="Files\ConsumableItems.csv" />
     <Content Include="Files\Enemy.csv" />
     <Content Include="Files\PassiveItem.csv" />
+    <Content Include="Files\Plyaer.csv" />
     <Content Include="Files\Skill.csv" />
   </ItemGroup>
 </Project>

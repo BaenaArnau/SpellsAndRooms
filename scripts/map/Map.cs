@@ -11,8 +11,7 @@ namespace SpellsAndRooms.scripts.map
         [Export] public PackedScene MapRoomScene;
         [Export] public PackedScene MapLineScene;
         [Export] public PackedScene BattleScenePacked;
-        [Export] public PackedScene CampfireScenePacked;
-        [Export] public PackedScene TreasureScenePacked;
+        [Export] public PackedScene ShopScenePacked;
         [Export(PropertyHint.Range, "1.0,3.0,0.05")] public float MapZoom = 1.7f;
         [Export] public float ScrollStep = 80.0f;
         [Export] public float ScrollSmoothness = 10.0f;
@@ -39,8 +38,9 @@ namespace SpellsAndRooms.scripts.map
         private const string PlayerScenePath = "res://scenes/Characters/Player/Oathbreakers.tscn";
         private const string BattleScenePath = "res://scenes/Turns/Battel.tscn";
         private const string LegacyBattleScenePath = "res://scripts/Turns/Battel.tscn";
-        private const string CampfireScenePath = "res://scenes/Turns/Campfire.tscn";
-        private const string TreasureScenePath = "res://scenes/Turns/Tresure.tscn";
+        private const string ShopScenePath = "res://scenes/Turns/Shop.tscn";
+        private bool _isInShop;
+        private Room _pendingShopRoom;
 
         public override void _Ready()
         {
@@ -66,18 +66,11 @@ namespace SpellsAndRooms.scripts.map
                     GD.PrintErr($"No se pudo cargar la escena de batalla en '{BattleScenePath}' ni en '{LegacyBattleScenePath}'.");
             }
 
-            if (CampfireScenePacked == null)
+            if (ShopScenePacked == null)
             {
-                CampfireScenePacked = ResourceLoader.Load<PackedScene>(CampfireScenePath);
-                if (CampfireScenePacked == null)
-                    GD.PrintErr($"No se pudo cargar la escena de fogata en '{CampfireScenePath}'.");
-            }
-
-            if (TreasureScenePacked == null)
-            {
-                TreasureScenePacked = ResourceLoader.Load<PackedScene>(TreasureScenePath);
-                if (TreasureScenePacked == null)
-                    GD.PrintErr($"No se pudo cargar la escena de tesoro en '{TreasureScenePath}'.");
+                ShopScenePacked = ResourceLoader.Load<PackedScene>(ShopScenePath);
+                if (ShopScenePacked == null)
+                    GD.PrintErr($"No se pudo cargar la escena de tienda en '{ShopScenePath}'.");
             }
 
             if (_visualsContainer != null)
@@ -335,35 +328,71 @@ namespace SpellsAndRooms.scripts.map
 
         private void OnRoomSelected(Room selectedRoom)
         {
-            if (_isInBattle)
+            if (_isInBattle || _isInShop)
                 return;
 
             _selectedRoom = selectedRoom;
             GD.Print($"Habitación seleccionada: {selectedRoom}");
 
-            switch (selectedRoom.Type)
+            if (selectedRoom.Type == Room.RoomType.Monster || selectedRoom.Type == Room.RoomType.Boss)
             {
-                case Room.RoomType.Monster:
-                case Room.RoomType.Boss:
-                    StartCombat(selectedRoom);
-                    return;
-
-                case Room.RoomType.Shop:
-                    StartShop(selectedRoom);
-                    return;
-
-                case Room.RoomType.Campfire:
-                    StartCampfire(selectedRoom);
-                    return;
-
-                case Room.RoomType.Treasure:
-                    StartTreasure(selectedRoom);
-                    return;
-
-                default:
-                    AdvanceMapRoute(selectedRoom);
-                    return;
+                StartCombat(selectedRoom);
+                return;
             }
+
+            if (selectedRoom.Type == Room.RoomType.Shop)
+            {
+                StartShop(selectedRoom);
+                return;
+            }
+
+            AdvanceMapRoute(selectedRoom);
+        }
+
+        private void StartShop(Room selectedRoom)
+        {
+            if (_player == null)
+            {
+                GD.PrintErr("No hay jugador para abrir la tienda.");
+                return;
+            }
+
+            if (ShopScenePacked == null)
+            {
+                GD.PrintErr("No hay escena de tienda asignada.");
+                return;
+            }
+
+            Node shopInstance = ShopScenePacked.Instantiate();
+            if (shopInstance is not ShopScene shopScene)
+            {
+                GD.PrintErr("La escena de tienda no usa ShopScene.cs.");
+                shopInstance.QueueFree();
+                return;
+            }
+
+            _isInShop = true;
+            _pendingShopRoom = selectedRoom;
+
+            if (_visualsContainer != null)
+                _visualsContainer.Visible = false;
+
+            AddChild(shopScene);
+            shopScene.ShopClosed += OnShopClosed;
+            shopScene.StartShop(_player);
+        }
+
+        private void OnShopClosed()
+        {
+            _isInShop = false;
+
+            if (_visualsContainer != null)
+                _visualsContainer.Visible = true;
+
+            if (_pendingShopRoom != null)
+                AdvanceMapRoute(_pendingShopRoom);
+
+            _pendingShopRoom = null;
         }
 
         private void StartCombat(Room selectedRoom)
@@ -434,134 +463,6 @@ namespace SpellsAndRooms.scripts.map
                 AdvanceMapRoute(_pendingCombatRoom);
 
             _pendingCombatRoom = null;
-        }
-
-        private void StartShop(Room selectedRoom)
-        {
-            if (_player == null)
-            {
-                GD.PrintErr("El jugador no existe para iniciar la tienda.");
-                return;
-            }
-
-            var shopScene = new ShopScene();
-            
-            // Ocultar el mapa mientras está en la tienda
-            if (_visualsContainer != null)
-            {
-                _visualsContainer.Visible = false;
-            }
-
-            AddChild(shopScene);
-            shopScene.StartShop(_player);
-            shopScene.ShopClosed += () => OnShopClosed(selectedRoom);
-        }
-
-        private void OnShopClosed(Room selectedRoom)
-        {
-            // Mostrar el mapa nuevamente después de la tienda
-            if (_visualsContainer != null)
-            {
-                _visualsContainer.Visible = true;
-            }
-
-            AdvanceMapRoute(selectedRoom);
-        }
-
-        private void StartCampfire(Room selectedRoom)
-        {
-            if (_player == null)
-            {
-                GD.PrintErr("El jugador no existe para iniciar la fogata.");
-                return;
-            }
-
-            GD.Print("[Map] Iniciando escena de fogata...");
-
-            // Ocultar el mapa mientras está en la fogata
-            if (_visualsContainer != null)
-            {
-                _visualsContainer.Visible = false;
-            }
-
-            if (CampfireScenePacked == null)
-            {
-                GD.PrintErr("No hay escena de fogata asignada.");
-                OnCampfireClosed(selectedRoom);
-                return;
-            }
-
-            Node campfireInstance = CampfireScenePacked.Instantiate();
-            if (campfireInstance is not CampfireScene campfireScene)
-            {
-                GD.PrintErr("La escena de fogata no usa CampfireScene.cs.");
-                campfireInstance.QueueFree();
-                OnCampfireClosed(selectedRoom);
-                return;
-            }
-
-            AddChild(campfireScene);
-            campfireScene.StartCampfire(_player);
-            campfireScene.CampfireClosed += () => OnCampfireClosed(selectedRoom);
-        }
-
-        private void OnCampfireClosed(Room selectedRoom)
-        {
-            // Mostrar el mapa nuevamente después de la fogata
-            if (_visualsContainer != null)
-            {
-                _visualsContainer.Visible = true;
-            }
-
-            AdvanceMapRoute(selectedRoom);
-        }
-
-        private void StartTreasure(Room selectedRoom)
-        {
-            if (_player == null)
-            {
-                GD.PrintErr("El jugador no existe para abrir el tesoro.");
-                return;
-            }
-
-            GD.Print("[Map] Abriendo tesoro...");
-            
-            // Ocultar el mapa mientras está en el tesoro
-            if (_visualsContainer != null)
-            {
-                _visualsContainer.Visible = false;
-            }
-
-            if (TreasureScenePacked == null)
-            {
-                GD.PrintErr("No hay escena de tesoro asignada.");
-                OnTreasureClosed(selectedRoom);
-                return;
-            }
-
-            Node treasureInstance = TreasureScenePacked.Instantiate();
-            if (treasureInstance is not TreasureScene treasureScene)
-            {
-                GD.PrintErr("La escena de tesoro no usa TreasureScene.cs.");
-                treasureInstance.QueueFree();
-                OnTreasureClosed(selectedRoom);
-                return;
-            }
-
-            AddChild(treasureScene);
-            treasureScene.StartTreasure(_player);
-            treasureScene.TreasureClosed += () => OnTreasureClosed(selectedRoom);
-        }
-
-        private void OnTreasureClosed(Room selectedRoom)
-        {
-            // Mostrar el mapa nuevamente después del tesoro
-            if (_visualsContainer != null)
-            {
-                _visualsContainer.Visible = true;
-            }
-
-            AdvanceMapRoute(selectedRoom);
         }
 
         private void AdvanceMapRoute(Room selectedRoom)

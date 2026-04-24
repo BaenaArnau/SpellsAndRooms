@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://6ho3n8ykn1r"]
 
-[ext_resource type="Script" uid="uid://c5g4klihr2r4" path="res://scripts/Turns/TreasureScene.cs" id="1_0l3wv"]
+[ext_resource type="Script" uid="uid://ct1075j4fr2wd" path="res://scripts/Turns/TreasureScene.cs" id="1_0l3wv"]
+[ext_resource type="Texture2D" uid="uid://bp00exw1fy0gg" path="res://assets/Turns/Treasure.png" id="2_kfwt8"]
 
 [node name="Tresure" type="Node" unique_id=148785480]
 script = ExtResource("1_0l3wv")
+BackgroundTexture = ExtResource("2_kfwt8")

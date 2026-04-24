@@ -16,6 +16,7 @@ namespace SpellsAndRooms.scripts.Turns
         private const string BattleBackgroundPath = "res://assets/Turns/BattelBackground.png";
         private const string WinScenePath = "res://scenes/Turns/Win.tscn";
         private const string LoseScenePath = "res://scenes/Turns/Lose.tscn";
+        private static readonly Vector2 BaseViewport = new Vector2(1152, 648);
 
         private readonly BattleController _battleController = new BattleController();
         private Player _player;
@@ -42,7 +43,17 @@ namespace SpellsAndRooms.scripts.Turns
         private GridContainer _skillGrid;
         private GridContainer _itemGrid;
         private GridContainer _targetGrid;
+        private RichTextLabel _infoLabel;
+        private Label _commandSectionLabel;
+        private Label _skillSectionLabel;
+        private Label _itemSectionLabel;
         private RichTextLabel _logLabel;
+        private PanelContainer _logPanel;
+        private PanelContainer _playerPanel;
+        private PanelContainer _enemyPanel;
+        private PanelContainer _commandPanel;
+        private Button _toggleLogButton;
+        private bool _isLogVisible = true;
 
         private Button _attackButton;
         private Button _magicButton;
@@ -70,6 +81,7 @@ namespace SpellsAndRooms.scripts.Turns
                 RefreshUi();
                 ShowMainCommands();
                 StartPlayerTurn();
+                ApplyResponsiveLayout();
             }
             else
                 GD.PrintErr("[BattleScene] StartBattle - Node is NOT inside tree yet!");
@@ -88,6 +100,8 @@ namespace SpellsAndRooms.scripts.Turns
                 ShowMainCommands();
                 StartPlayerTurn();
             }
+
+            ApplyResponsiveLayout();
         }
 
         private void BuildUi()
@@ -137,41 +151,17 @@ namespace SpellsAndRooms.scripts.Turns
             _uiRoot.AnchorBottom = 1;
             _uiLayer.AddChild(_uiRoot);
 
-            var outer = new MarginContainer
-            {
-                Name = "OuterMargin",
-                AnchorLeft = 0,
-                AnchorTop = 0,
-                AnchorRight = 1,
-                AnchorBottom = 1,
-                ThemeTypeVariation = "MarginContainer"
-            };
-            _uiRoot.AddChild(outer);
-
-            var inner = new VBoxContainer
-            {
-                Name = "InnerLayout",
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-                SizeFlagsVertical = Control.SizeFlags.ExpandFill
-            };
-            outer.AddChild(inner);
-
-            var topRow = new HBoxContainer
-            {
-                Name = "TopRow",
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-                SizeFlagsVertical = Control.SizeFlags.ExpandFill
-            };
-            inner.AddChild(topRow);
-
-            var playerPanel = new PanelContainer
+            _playerPanel = new PanelContainer
             {
                 Name = "PlayerPanel",
-                CustomMinimumSize = new Vector2(260, 0),
-                SizeFlagsVertical = Control.SizeFlags.ExpandFill
+                CustomMinimumSize = new Vector2(220, 130)
             };
-            playerPanel.AddThemeStyleboxOverride("panel", CreatePlayerPanelStyle());
-            topRow.AddChild(playerPanel);
+            _playerPanel.AnchorLeft = 0.02f;
+            _playerPanel.AnchorTop = 0.75f;
+            _playerPanel.AnchorRight = 0.22f;
+            _playerPanel.AnchorBottom = 0.93f;
+            _playerPanel.AddThemeStyleboxOverride("panel", CreatePlayerPanelStyle());
+            _uiRoot.AddChild(_playerPanel);
 
             var playerLayout = new VBoxContainer
             {
@@ -179,7 +169,7 @@ namespace SpellsAndRooms.scripts.Turns
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 SizeFlagsVertical = Control.SizeFlags.ExpandFill
             };
-            playerPanel.AddChild(playerLayout);
+            _playerPanel.AddChild(playerLayout);
 
             _playerNameLabel = new Label { Name = "PlayerName", Text = "Heroe" };
             playerLayout.AddChild(_playerNameLabel);
@@ -206,25 +196,36 @@ namespace SpellsAndRooms.scripts.Turns
             };
             playerLayout.AddChild(_playerMpBar);
 
-            var middlePanel = new PanelContainer
+            _enemyPanel = new PanelContainer
             {
-                Name = "MiddlePanel",
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-                SizeFlagsVertical = Control.SizeFlags.ExpandFill
+                Name = "EnemyPanel",
+                CustomMinimumSize = new Vector2(250, 150)
             };
-            middlePanel.AddThemeStyleboxOverride("panel", CreateMiddlePanelStyle());
-            topRow.AddChild(middlePanel);
+            _enemyPanel.AnchorLeft = 0.74f;
+            _enemyPanel.AnchorTop = 0.02f;
+            _enemyPanel.AnchorRight = 0.98f;
+            _enemyPanel.AnchorBottom = 0.25f;
+            _enemyPanel.AddThemeStyleboxOverride("panel", CreateMiddlePanelStyle());
+            _uiRoot.AddChild(_enemyPanel);
 
-            var middleLayout = new VBoxContainer
+            var enemyLayout = new VBoxContainer
             {
-                Name = "MiddleLayout",
+                Name = "EnemyLayout",
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 SizeFlagsVertical = Control.SizeFlags.ExpandFill
             };
-            middlePanel.AddChild(middleLayout);
+            _enemyPanel.AddChild(enemyLayout);
 
             var enemyLabel = new Label { Text = "Enemigos" };
-            middleLayout.AddChild(enemyLabel);
+            enemyLayout.AddChild(enemyLabel);
+
+            var enemyScroll = new ScrollContainer
+            {
+                Name = "EnemyScroll",
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                SizeFlagsVertical = Control.SizeFlags.ExpandFill
+            };
+            enemyLayout.AddChild(enemyScroll);
 
             _enemyInfoContainer = new VBoxContainer
             {
@@ -232,36 +233,34 @@ namespace SpellsAndRooms.scripts.Turns
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 SizeFlagsVertical = Control.SizeFlags.ExpandFill
             };
-            middleLayout.AddChild(_enemyInfoContainer);
+            enemyScroll.AddChild(_enemyInfoContainer);
 
-            _targetGrid = new GridContainer
+            _commandPanel = new PanelContainer
             {
-                Name = "TargetGrid",
-                Columns = 2,
-                Visible = false,
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+                Name = "CommandPanel",
+                CustomMinimumSize = new Vector2(360, 160)
             };
-            middleLayout.AddChild(_targetGrid);
+            _commandPanel.AnchorLeft = 0.30f;
+            _commandPanel.AnchorTop = 0.72f;
+            _commandPanel.AnchorRight = 0.70f;
+            _commandPanel.AnchorBottom = 0.93f;
+            _commandPanel.AddThemeStyleboxOverride("panel", CreateRightPanelStyle());
+            _uiRoot.AddChild(_commandPanel);
 
-            var rightPanel = new PanelContainer
+            var commandLayout = new VBoxContainer
             {
-                Name = "RightPanel",
-                CustomMinimumSize = new Vector2(330, 0),
-                SizeFlagsVertical = Control.SizeFlags.ExpandFill
-            };
-            rightPanel.AddThemeStyleboxOverride("panel", CreateRightPanelStyle());
-            topRow.AddChild(rightPanel);
-
-            var rightLayout = new VBoxContainer
-            {
-                Name = "RightLayout",
+                Name = "CommandLayout",
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 SizeFlagsVertical = Control.SizeFlags.ExpandFill
             };
-            rightPanel.AddChild(rightLayout);
+            _commandPanel.AddChild(commandLayout);
 
-            var commandLabel = new Label { Text = "Acciones" };
-            rightLayout.AddChild(commandLabel);
+            _commandSectionLabel = new Label
+            {
+                Text = "Acciones",
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            commandLayout.AddChild(_commandSectionLabel);
 
             _commandGrid = new GridContainer
             {
@@ -269,47 +268,125 @@ namespace SpellsAndRooms.scripts.Turns
                 Columns = 2,
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
             };
-            rightLayout.AddChild(_commandGrid);
+            commandLayout.AddChild(_commandGrid);
 
-            var skillLabel = new Label { Text = "Magias" };
-            rightLayout.AddChild(skillLabel);
+            _skillSectionLabel = new Label
+            {
+                Text = "Magias",
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            commandLayout.AddChild(_skillSectionLabel);
 
             _skillGrid = new GridContainer
             {
                 Name = "SkillGrid",
                 Columns = 2,
                 Visible = false,
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                SizeFlagsVertical = Control.SizeFlags.ExpandFill
             };
-            rightLayout.AddChild(_skillGrid);
+            commandLayout.AddChild(_skillGrid);
 
-            var itemLabel = new Label { Text = "Objetos" };
-            rightLayout.AddChild(itemLabel);
+            _itemSectionLabel = new Label
+            {
+                Text = "Objetos",
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            commandLayout.AddChild(_itemSectionLabel);
 
             _itemGrid = new GridContainer
             {
                 Name = "ItemGrid",
                 Columns = 2,
                 Visible = false,
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                SizeFlagsVertical = Control.SizeFlags.ExpandFill
             };
-            rightLayout.AddChild(_itemGrid);
+            commandLayout.AddChild(_itemGrid);
+
+            _targetGrid = new GridContainer
+            {
+                Name = "TargetGrid",
+                Columns = 2,
+                Visible = false,
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                SizeFlagsVertical = Control.SizeFlags.ExpandFill
+            };
+            commandLayout.AddChild(_targetGrid);
+
+            _infoLabel = new RichTextLabel
+            {
+                Name = "InfoLabel",
+                Visible = false,
+                BbcodeEnabled = false,
+                FitContent = false,
+                ScrollFollowing = false,
+                CustomMinimumSize = new Vector2(0, 80),
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                SizeFlagsVertical = Control.SizeFlags.ExpandFill
+            };
+            commandLayout.AddChild(_infoLabel);
 
             _backButton = CreateMenuButton("Volver");
             _backButton.Pressed += ShowMainCommands;
-            rightLayout.AddChild(_backButton);
+            _backButton.Visible = false;
+            commandLayout.AddChild(_backButton);
+
+            _logPanel = new PanelContainer
+            {
+                Name = "LogPanel",
+                CustomMinimumSize = new Vector2(280, 140)
+            };
+            _logPanel.AnchorLeft = 0.02f;
+            _logPanel.AnchorTop = 0.02f;
+            _logPanel.AnchorRight = 0.34f;
+            _logPanel.AnchorBottom = 0.24f;
+            _logPanel.AddThemeStyleboxOverride("panel", CreateMiddlePanelStyle());
+            _uiRoot.AddChild(_logPanel);
+
+            var logLayout = new VBoxContainer
+            {
+                Name = "LogLayout",
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                SizeFlagsVertical = Control.SizeFlags.ExpandFill
+            };
+            _logPanel.AddChild(logLayout);
+
+            var logHeader = new HBoxContainer
+            {
+                Name = "LogHeader",
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+            };
+            logLayout.AddChild(logHeader);
+
+            logHeader.AddChild(new Label
+            {
+                Text = "Registro",
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+            });
+
+            _toggleLogButton = new Button
+            {
+                Text = "Ocultar",
+                CustomMinimumSize = new Vector2(110, 34)
+            };
+            _toggleLogButton.Pressed += ToggleLogVisibility;
+            logHeader.AddChild(_toggleLogButton);
 
             _logLabel = new RichTextLabel
             {
                 Name = "Log",
                 BbcodeEnabled = false,
-                FitContent = true,
+                FitContent = false,
                 ScrollFollowing = true,
-                CustomMinimumSize = new Vector2(0, 150),
+                CustomMinimumSize = new Vector2(0, 100),
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 SizeFlagsVertical = Control.SizeFlags.ExpandFill
             };
-            inner.AddChild(_logLabel);
+            logLayout.AddChild(_logLabel);
+
+            ApplyLogVisibility();
+            _uiRoot.Resized += ApplyResponsiveLayout;
 
             _uiBuilt = true;
         }
@@ -385,7 +462,8 @@ namespace SpellsAndRooms.scripts.Turns
                 viewport = new Vector2(1280, 720);
             }
             
-            _player.Position = new Vector2(viewport.X * 0.22f, viewport.Y * 0.70f);
+            // El jugador queda en la zona central-izquierda para no taparse con paneles inferiores.
+            _player.Position = new Vector2(viewport.X * 0.30f, viewport.Y * 0.56f);
             _player.Scale = new Vector2(2.0f, 2.0f);
             _player.FlipH = false;
             _player.Visible = true;
@@ -412,14 +490,19 @@ namespace SpellsAndRooms.scripts.Turns
                 viewport = new Vector2(1280, 720);
             }
             
-            float baseX = viewport.X * 0.72f;
-            float baseY = viewport.Y * 0.35f;
-            float xOffset = (index % 2) * 110.0f;
-            float yOffset = (index / 2) * 110.0f;
-            
-            enemy.Position = new Vector2(baseX + xOffset, baseY + yOffset);
+            int columns = 2;
+            int row = index / columns;
+            int col = index % columns;
+            float baseX = _enemies.Count == 1 ? viewport.X * 0.72f : viewport.X * 0.60f;
+            float baseY = viewport.Y * 0.42f;
+            float xOffset = col * 150.0f;
+            float yOffset = row * 120.0f;
+
+            float x = Mathf.Clamp(baseX + xOffset, viewport.X * 0.52f, viewport.X * 0.92f);
+            float y = Mathf.Clamp(baseY + yOffset, viewport.Y * 0.30f, viewport.Y * 0.70f);
+            enemy.Position = new Vector2(x, y);
             enemy.Scale = Vector2.One * 1.8f;
-            enemy.FlipH = true;
+            enemy.FlipH = false;
             enemy.Visible = true;
             enemy.ZIndex = 5;
             
@@ -457,12 +540,21 @@ namespace SpellsAndRooms.scripts.Turns
 
             ClearChildren(_commandGrid);
             _commandGrid.Visible = true;
+            _commandSectionLabel.Visible = true;
             if (_skillGrid != null)
                 _skillGrid.Visible = false;
+            if (_skillSectionLabel != null)
+                _skillSectionLabel.Visible = false;
             if (_itemGrid != null)
                 _itemGrid.Visible = false;
+            if (_itemSectionLabel != null)
+                _itemSectionLabel.Visible = false;
             if (_targetGrid != null)
                 _targetGrid.Visible = false;
+            if (_infoLabel != null)
+                _infoLabel.Visible = false;
+            if (_backButton != null)
+                _backButton.Visible = false;
 
             _attackButton = CreateMenuButton("Ataque");
             _attackButton.Pressed += OnAttackPressed;
@@ -477,8 +569,8 @@ namespace SpellsAndRooms.scripts.Turns
             _itemButton.Pressed += ShowItemMenu;
             _commandGrid.AddChild(_itemButton);
 
-            _defendButton = CreateMenuButton("Defensa");
-            _defendButton.Disabled = true;
+            _defendButton = CreateMenuButton("Informacion");
+            _defendButton.Pressed += ShowInfoMenu;
             _commandGrid.AddChild(_defendButton);
         }
 
@@ -488,9 +580,17 @@ namespace SpellsAndRooms.scripts.Turns
                 return;
 
             ClearChildren(_skillGrid);
-            _commandGrid.Visible = true;
+            _commandGrid.Visible = false;
+            _commandSectionLabel.Visible = false;
             _skillGrid.Visible = true;
+            _skillSectionLabel.Visible = true;
+            _itemGrid.Visible = false;
+            _itemSectionLabel.Visible = false;
             _targetGrid.Visible = false;
+            if (_infoLabel != null)
+                _infoLabel.Visible = false;
+            if (_backButton != null)
+                _backButton.Visible = true;
             _skillGrid.Columns = 2;
 
             foreach (Skill skill in _player.Skills)
@@ -512,10 +612,17 @@ namespace SpellsAndRooms.scripts.Turns
                 return;
 
             ClearChildren(_itemGrid);
-            _commandGrid.Visible = true;
+            _commandGrid.Visible = false;
+            _commandSectionLabel.Visible = false;
             _skillGrid.Visible = false;
+            _skillSectionLabel.Visible = false;
             _targetGrid.Visible = false;
             _itemGrid.Visible = true;
+            _itemSectionLabel.Visible = true;
+            if (_infoLabel != null)
+                _infoLabel.Visible = false;
+            if (_backButton != null)
+                _backButton.Visible = true;
             _itemGrid.Columns = 2;
 
             if (_player.Consumables.Count == 0)
@@ -542,8 +649,16 @@ namespace SpellsAndRooms.scripts.Turns
             _pendingSkill = skill;
             ClearChildren(_targetGrid);
             _targetGrid.Visible = true;
+            _commandSectionLabel.Visible = false;
             _skillGrid.Visible = false;
-            _commandGrid.Visible = true;
+            _skillSectionLabel.Visible = false;
+            _itemGrid.Visible = false;
+            _itemSectionLabel.Visible = false;
+            _commandGrid.Visible = false;
+            if (_infoLabel != null)
+                _infoLabel.Visible = false;
+            if (_backButton != null)
+                _backButton.Visible = true;
 
             foreach (Enemy enemy in _enemies.Where(e => e != null && e.IsAlive))
             {
@@ -551,6 +666,84 @@ namespace SpellsAndRooms.scripts.Turns
                 targetButton.Pressed += () => OnTargetSelected(enemy);
                 _targetGrid.AddChild(targetButton);
             }
+        }
+
+        private void ShowInfoMenu()
+        {
+            if (_player == null || _infoLabel == null)
+                return;
+
+            _commandGrid.Visible = false;
+            _commandSectionLabel.Visible = false;
+            _skillGrid.Visible = false;
+            _skillSectionLabel.Visible = false;
+            _itemGrid.Visible = false;
+            _itemSectionLabel.Visible = false;
+            _targetGrid.Visible = false;
+            _infoLabel.Visible = true;
+            if (_backButton != null)
+                _backButton.Visible = true;
+
+            var lines = new List<string>
+            {
+                "Informacion del heroe",
+                $"Resistencia: {_player.DamageResistance}",
+                $"Debilidad: {_player.DamageWeakness}",
+                "",
+                "Pasivos:" 
+            };
+
+            if (_player.Passives.Count == 0)
+            {
+                lines.Add("- No tienes objetos pasivos.");
+            }
+            else
+            {
+                foreach (PassiveItem passive in _player.Passives)
+                {
+                    if (passive == null)
+                        continue;
+
+                    string passiveLine = $"- {passive.ItemName} [{passive.Type}] +{passive.BonusValue}";
+                    if (!string.IsNullOrWhiteSpace(passive.Description))
+                        passiveLine += $": {passive.Description}";
+                    lines.Add(passiveLine);
+                }
+            }
+
+            _infoLabel.Clear();
+            _infoLabel.AppendText(string.Join("\n", lines));
+        }
+
+        private void ApplyResponsiveLayout()
+        {
+            if (_uiRoot == null)
+                return;
+
+            Vector2 viewport = GetViewportRect().Size;
+            if (viewport.X <= 0 || viewport.Y <= 0)
+                viewport = BaseViewport;
+
+            float widthScale = viewport.X / BaseViewport.X;
+            float heightScale = viewport.Y / BaseViewport.Y;
+            float scale = Mathf.Clamp(Mathf.Min(widthScale, heightScale), 1.0f, 1.9f);
+
+            if (_playerPanel != null)
+                _playerPanel.CustomMinimumSize = new Vector2(220, 130) * scale;
+            if (_enemyPanel != null)
+                _enemyPanel.CustomMinimumSize = new Vector2(250, 150) * scale;
+            if (_commandPanel != null)
+                _commandPanel.CustomMinimumSize = new Vector2(360, 160) * scale;
+
+            if (_logPanel != null)
+            {
+                Vector2 visibleSize = new Vector2(280, 140) * scale;
+                Vector2 collapsedSize = new Vector2(280, 54) * scale;
+                _logPanel.CustomMinimumSize = _isLogVisible ? visibleSize : collapsedSize;
+            }
+
+            if (_toggleLogButton != null)
+                _toggleLogButton.CustomMinimumSize = new Vector2(110, 34) * scale;
         }
 
         private void OnAttackPressed()
@@ -900,12 +1093,29 @@ namespace SpellsAndRooms.scripts.Turns
             }
         }
 
+        private void ToggleLogVisibility()
+        {
+            _isLogVisible = !_isLogVisible;
+            ApplyLogVisibility();
+        }
+
+        private void ApplyLogVisibility()
+        {
+            if (_logLabel == null || _toggleLogButton == null || _logPanel == null)
+                return;
+
+            _logLabel.Visible = _isLogVisible;
+            _toggleLogButton.Text = _isLogVisible ? "Ocultar" : "Mostrar";
+            _logPanel.AnchorBottom = _isLogVisible ? 0.24f : 0.09f;
+            ApplyResponsiveLayout();
+        }
+
         private static Button CreateMenuButton(string text)
         {
             return new Button
             {
                 Text = text,
-                CustomMinimumSize = new Vector2(110, 58),
+                CustomMinimumSize = new Vector2(96, 42),
                 SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
                 SizeFlagsVertical = Control.SizeFlags.Fill
             };

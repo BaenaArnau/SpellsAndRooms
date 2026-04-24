@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://cp53kqrvqjjns"]
 
-[ext_resource type="Script" path="res://scripts/Turns/CampfireScene.cs" id="1_xh125"]
+[ext_resource type="Script" uid="uid://bdt00mgxe3vgc" path="res://scripts/Turns/CampfireScene.cs" id="1_xh125"]
+[ext_resource type="Texture2D" uid="uid://bg2yn1dkuply2" path="res://assets/Turns/Campfire.png" id="2_xj3w4"]
 
 [node name="Campfire" type="Node" unique_id=1850744369]
 script = ExtResource("1_xh125")
+BackgroundTexture = ExtResource("2_xj3w4")

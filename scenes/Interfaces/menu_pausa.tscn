@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://csb3jibyjau2q" path="res://scenes/Interfaces/settings.tscn" id="5_je6uc"]
 
 [node name="menu_pausa" type="CanvasLayer" unique_id=700777700 node_paths=PackedStringArray("_settings")]
-process_mode = 3
+process_mode = 2
 script = ExtResource("1_im7n4")
 _settings = NodePath("Settings")
 

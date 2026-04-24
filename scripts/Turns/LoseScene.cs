@@ -162,7 +162,7 @@ namespace SpellsAndRooms.scripts.Turns
         private void OnContinuePressed()
         {
             EmitSignal(SignalName.LoseClosed);
-            QueueFree();
+            GetTree().ChangeSceneToFile("res://scenes/Interfaces/menu_principal.tscn");
         }
 
         private static StyleBoxFlat CreatePanelStyle()

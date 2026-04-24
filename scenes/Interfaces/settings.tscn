@@ -9,7 +9,6 @@
 
 [node name="Settings" type="CanvasLayer" unique_id=1413165098]
 process_mode = 3
-layer = 2
 script = ExtResource("1_kkycx")
 
 [node name="Pergamino" type="TextureRect" parent="." unique_id=120368301]

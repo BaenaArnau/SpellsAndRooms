@@ -27,6 +27,7 @@ namespace SpellsAndRooms.scripts.Turns
         private readonly BattleController _battleController = new BattleController();
         private Player _player;
         private List<Enemy> _enemies = new List<Enemy>();
+        private bool _isFinalBossBattle;
         private Skill _pendingSkill;
         private bool _battleEnded;
         private bool _uiBuilt;
@@ -78,10 +79,14 @@ namespace SpellsAndRooms.scripts.Turns
         /// <param name="enemies">
         /// La lista de enemigos que el jugador enfrentará en esta batalla. Cada enemigo debe tener sus estadísticas y comportamientos definidos para que la batalla funcione correctamente. Si se pasa null, se inicializará como una lista vacía, lo que resultará en una batalla sin enemigos (posiblemente para pruebas o escenarios especiales).
         /// </param>
-        public void StartBattle(Player player, List<Enemy> enemies)
+        /// <param name="isFinalBossBattle">
+        /// Indica si esta batalla corresponde al boss final. Cuando es true, la escena de victoria mostrará el menú final para volver al menú principal.
+        /// </param>
+        public void StartBattle(Player player, List<Enemy> enemies, bool isFinalBossBattle = false)
         {
             _player = player;
             _enemies = enemies ?? new List<Enemy>();
+            _isFinalBossBattle = isFinalBossBattle;
 
             GD.Print($"[BattleScene] StartBattle called - Player: {_player?.CharacterName}, Enemies: {_enemies?.Count}");
             
@@ -1031,7 +1036,7 @@ namespace SpellsAndRooms.scripts.Turns
             }
 
             AddChild(winScene);
-            winScene.StartWin(_player, earnedGold);
+            winScene.StartWin(_player, earnedGold, _isFinalBossBattle);
             winScene.WinClosed += () => OnWinClosed(earnedGold);
         }
         

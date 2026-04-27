@@ -12,16 +12,20 @@ namespace SpellsAndRooms.scripts.Turns
 
         private Player _player;
         private int _earnedGold;
+        private bool _isFinalBossVictory;
         private bool _uiBuilt;
 
+        private Label _titleLabel;
+        private Label _messageLabel;
         private Label _goldLabel;
         private Label _totalGoldLabel;
         private Button _continueButton;
 
-        public void StartWin(Player player, int earnedGold)
+        public void StartWin(Player player, int earnedGold, bool isFinalBossVictory = false)
         {
             _player = player;
             _earnedGold = earnedGold;
+            _isFinalBossVictory = isFinalBossVictory;
 
             if (IsInsideTree())
             {
@@ -92,14 +96,22 @@ namespace SpellsAndRooms.scripts.Turns
             };
             centerPanel.AddChild(layout);
 
-            var titleLabel = new Label
+            _titleLabel = new Label
             {
                 Text = "¡VICTORIA!",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 CustomMinimumSize = new Vector2(0, 80),
                 ThemeTypeVariation = "title"
             };
-            layout.AddChild(titleLabel);
+            layout.AddChild(_titleLabel);
+
+            _messageLabel = new Label
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart,
+                CustomMinimumSize = new Vector2(0, 48)
+            };
+            layout.AddChild(_messageLabel);
 
             layout.AddChild(new HSeparator());
 
@@ -155,9 +167,19 @@ namespace SpellsAndRooms.scripts.Turns
             if (_player == null)
                 return;
 
+            if (_titleLabel != null)
+                _titleLabel.Text = _isFinalBossVictory ? "¡BOSS FINAL DERROTADO!" : "¡VICTORIA!";
+
+            if (_messageLabel != null)
+                _messageLabel.Text = _isFinalBossVictory
+                    ? "Has completado la aventura. Gracias por jugar."
+                    : "Has ganado el combate.";
+
             _goldLabel.Text = $"+{_earnedGold}";
             if (_totalGoldLabel != null)
                 _totalGoldLabel.Text = $"Oro Total: {_player.Gold}";
+            if (_continueButton != null)
+                _continueButton.Text = _isFinalBossVictory ? "Volver al Menu Principal" : "Continuar";
         }
 
         private void OnContinuePressed()

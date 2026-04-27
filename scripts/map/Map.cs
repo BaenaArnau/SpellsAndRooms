@@ -46,6 +46,7 @@ namespace SpellsAndRooms.scripts.map
         private const string ShopScenePath = "res://scenes/Turns/Shop.tscn";
         private const string CampfireScenePath = "res://scenes/Turns/Campfire.tscn";
         private const string TreasureScenePath = "res://scenes/Turns/Tresure.tscn";
+        private const string MainMenuScenePath = "res://scenes/Interfaces/menu_principal.tscn";
         private const string PlayerLoadoutCsvPath = "res://Files/Plyaer.csv";
         private bool _isInShop;
         private bool _isInCampfire;
@@ -716,13 +717,14 @@ namespace SpellsAndRooms.scripts.map
 
             _isInBattle = true;
             _pendingCombatRoom = selectedRoom;
+            bool isFinalBossBattle = selectedRoom.Type == Room.RoomType.Boss;
             
             // Ocultar mapa y HUD mientras está en batalla.
             SetMapVisible(false);
             
             AddChild(battleScene);
             battleScene.BattleFinished += OnBattleFinished;
-            battleScene.StartBattle(_player, encounter);
+            battleScene.StartBattle(_player, encounter, isFinalBossBattle);
         }
 
         private void OnBattleFinished(bool playerWon, int earnedGold)
@@ -740,6 +742,14 @@ namespace SpellsAndRooms.scripts.map
             {
                 _availableRooms.Clear();
                 UpdateAllRoomAvailability();
+                return;
+            }
+
+            bool finalBossWon = _pendingCombatRoom != null && _pendingCombatRoom.Type == Room.RoomType.Boss;
+            if (finalBossWon)
+            {
+                _pendingCombatRoom = null;
+                GetTree().ChangeSceneToFile(MainMenuScenePath);
                 return;
             }
 

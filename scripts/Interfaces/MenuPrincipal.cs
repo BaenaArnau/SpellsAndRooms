@@ -19,7 +19,7 @@ public partial class MenuPrincipal : Control
 	}
 	private void onStartPressed()
 	{
-		GetTree().ChangeSceneToFile("res://scenes/Map/map.tscn");
+		GetTree().ChangeSceneToFile("res://scenes/Interfaces/seleccion_personajes.tscn");
 	}
 	private void onSettingPressed()
     {

@@ -10,11 +10,12 @@
 [ext_resource type="Texture2D" uid="uid://b51mj8dct7fkv" path="res://assets/icons/MarcoMagoNormal.png" id="8_yqc31"]
 [ext_resource type="Texture2D" uid="uid://bxk1af1oy5kh3" path="res://assets/icons/MarcoMagoSelect.png" id="9_pbnf7"]
 [ext_resource type="Texture2D" uid="uid://livbfibiswin" path="res://assets/icons/MarcoMagoNormalDis.png" id="10_yqc31"]
+[ext_resource type="Theme" uid="uid://cspr6p2va4ryf" path="res://theme/Button_Theme.tres" id="11_pbnf7"]
 
 [node name="SeleccionPersonajes" type="CanvasLayer" unique_id=2126597733 node_paths=PackedStringArray("_caballeroButton", "_magoButton")]
 script = ExtResource("1_h47sb")
-_caballeroButton = NodePath("MarginContainer/Personajes/Caballero")
-_magoButton = NodePath("MarginContainer/Personajes/Mago")
+_caballeroButton = NodePath("Personajes/Personajes/Caballero")
+_magoButton = NodePath("Personajes/Personajes/Mago")
 
 [node name="Pergamino" type="TextureRect" parent="." unique_id=1023079492]
 texture_filter = 1
@@ -78,7 +79,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5803922)
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=471152393]
+[node name="Personajes" type="MarginContainer" parent="." unique_id=471152393]
 custom_minimum_size = Vector2(300, 300)
 anchors_preset = 8
 anchor_left = 0.5
@@ -96,11 +97,11 @@ theme_override_constants/margin_top = 200
 theme_override_constants/margin_right = 100
 theme_override_constants/margin_bottom = 200
 
-[node name="Personajes" type="HBoxContainer" parent="MarginContainer" unique_id=963076479]
+[node name="Personajes" type="HBoxContainer" parent="Personajes" unique_id=963076479]
 texture_filter = 1
 layout_mode = 2
 
-[node name="Caballero" type="TextureButton" parent="MarginContainer/Personajes" unique_id=260940168]
+[node name="Caballero" type="TextureButton" parent="Personajes/Personajes" unique_id=260940168]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -111,10 +112,9 @@ texture_disabled = ExtResource("5_4oo1t")
 texture_focused = ExtResource("6_yqc31")
 stretch_mode = 5
 
-[node name="Mago" type="TextureButton" parent="MarginContainer/Personajes" unique_id=1154310932]
+[node name="Mago" type="TextureButton" parent="Personajes/Personajes" unique_id=1154310932]
 layout_mode = 2
 size_flags_horizontal = 3
-disabled = true
 toggle_mode = true
 texture_normal = ExtResource("8_yqc31")
 texture_pressed = ExtResource("9_pbnf7")
@@ -123,5 +123,43 @@ texture_disabled = ExtResource("10_yqc31")
 texture_focused = ExtResource("9_pbnf7")
 stretch_mode = 5
 
-[connection signal="pressed" from="MarginContainer/Personajes/Caballero" to="." method="onCaballeroSelect"]
-[connection signal="pressed" from="MarginContainer/Personajes/Mago" to="." method="onMagoSelect"]
+[node name="Botones" type="MarginContainer" parent="." unique_id=580934459]
+texture_filter = 1
+custom_minimum_size = Vector2(500, 50)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -251.0
+offset_top = -135.0
+offset_right = 249.0
+offset_bottom = -106.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 40
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Botones" unique_id=1693096459]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Volver" type="Button" parent="Botones/HBoxContainer" unique_id=1373207869]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("11_pbnf7")
+text = "VOLVER
+"
+
+[node name="Seleccionar" type="Button" parent="Botones/HBoxContainer" unique_id=427746838]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("11_pbnf7")
+text = "SELECCIONAR
+"
+
+[connection signal="pressed" from="Personajes/Personajes/Caballero" to="." method="onCaballeroSelect"]
+[connection signal="pressed" from="Personajes/Personajes/Mago" to="." method="onMagoSelect"]
+[connection signal="pressed" from="Botones/HBoxContainer/Volver" to="." method="onVolverPressed"]
+[connection signal="pressed" from="Botones/HBoxContainer/Seleccionar" to="." method="onSelecionarPressed"]

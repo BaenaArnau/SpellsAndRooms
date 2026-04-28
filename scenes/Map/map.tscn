@@ -43,6 +43,7 @@ texture = ExtResource("9_m76i7")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=650150078]
 anchor_mode = 0
+limit_enabled = false
 
 [node name="MapGenerator" type="Node" parent="." unique_id=1040958756]
 script = ExtResource("1_4rr3d")

@@ -74,9 +74,13 @@ namespace SpellsAndRooms.scripts.map
             if (MapLineScene == null)
                 GD.PrintErr("MapLineScene no está asignada en el inspector");
 
-            _roomsContainer = GetNodeOrNull<Node2D>("%Rooms") ?? this;
-            _linesContainer = GetNodeOrNull<Node2D>("%Lines") ?? this;
+            // Prefer explicit children under the 'Visuals' node so they inherit the same
+            // scale/positioning. Using "%Rooms" or falling back to `this` caused
+            // instances added by code to end up outside the visuals container which
+            // produced misalignment when the window was resized/maximized.
             _visualsContainer = GetNodeOrNull<Node2D>("Visuals") ?? this;
+            _roomsContainer = _visualsContainer.GetNodeOrNull<Node2D>("Rooms") ?? _visualsContainer;
+            _linesContainer = _visualsContainer.GetNodeOrNull<Node2D>("Lines") ?? _visualsContainer;
 
             if (BattleScenePacked == null)
             {

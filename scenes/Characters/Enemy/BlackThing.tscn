@@ -1,13 +1,28 @@
 [gd_scene format=3 uid="uid://51xqg6yyu7a6"]
 
-[ext_resource type="Texture2D" uid="uid://dnpqq4ekda4wh" path="res://icon.svg" id="1_altb5"]
+[ext_resource type="Texture2D" uid="uid://cbxixav51pjv4" path="res://assets/enemies/BlackThink.png" id="1_altb5"]
 [ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="2_rgmwg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rgmwg"]
+atlas = ExtResource("1_altb5")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qak7y"]
+atlas = ExtResource("1_altb5")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7bntu"]
+atlas = ExtResource("1_altb5")
+region = Rect2(0, 0, 96, 96)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_qak7y"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_altb5")
+"texture": SubResource("AtlasTexture_rgmwg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qak7y")
 }],
 "loop": false,
 "name": &"Attack",
@@ -15,7 +30,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_altb5")
+"texture": SubResource("AtlasTexture_7bntu")
 }],
 "loop": true,
 "name": &"Idle",
@@ -32,7 +47,7 @@ Difficulty = 5
 MoneyLoot = 60
 CharacterName = "Black Thing"
 BaseHealth = 70
-BaseMana = 35
+BaseMana = 60
 Damage = 12
 DamageResistance = 3
 DamageWeakness = 4

@@ -332,5 +332,6 @@ namespace SpellsAndRooms.scripts.Characters
 			Health = BaseHealth;
 			Mana = BaseMana;
 		}
+
 	}
 }

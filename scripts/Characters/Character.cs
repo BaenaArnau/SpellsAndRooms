@@ -46,6 +46,8 @@ namespace SpellsAndRooms.scripts.Characters
 		/// <summary>Salud/Maná mínimo inicial para un personaje vivo.</summary>
 		private const int MIN_INITIAL_STAT = 1;
 
+		private AudioStreamPlayer2D _enemyAttackAudio;
+
 		// ==================== Propiedades Exportadas ====================
 
 		/// <summary>Nombre del personaje.</summary>
@@ -108,15 +110,28 @@ namespace SpellsAndRooms.scripts.Characters
 		public bool IsAlive => Health > 0;
 
 		// ==================== Métodos ====================
+		public override void _Ready()
+		{
+			_enemyAttackAudio = new AudioStreamPlayer2D();
+			AddChild(_enemyAttackAudio);
+
+    // Configuramos las propiedades
+    	_enemyAttackAudio.Bus = "Sonido";
+   		_enemyAttackAudio.Stream = GD.Load<AudioStream>("res://assets/sound/gorpeSonido.mp3");
+   		_enemyAttackAudio.VolumeDb = 0.0f;
+
+		}
 
 		/// <summary>
 		/// Aplica daño al personaje.
 		/// </summary>
 		/// <param name="amount">Cantidad de daño a aplicar. Se asegura que sea mayor o igual a 0.</param>
+		
 		public void TakeDamage(int amount)
 		{
 			int safeDamage = Mathf.Max(MIN_STAT, amount);
 			Health -= safeDamage;
+			_enemyAttackAudio.Play();
 		}
 
 		/// <summary>

@@ -27,7 +27,7 @@ public partial class Settings : CanvasLayer
 
 		float db = Mathf.LinearToDb(value);
 		_sonidoValue = value;
-		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Master"), db);
+		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Sonido"), db);
 		_sonidoSlider.Value = _sonidoValue;
 		
 	}
@@ -81,7 +81,7 @@ public partial class Settings : CanvasLayer
 
 		 _sonidoValue = (float)_configFile.GetValue("Sonido", "Volume", 0.0f);
 		 _sonidoSlider.Value = _sonidoValue;
-		 AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Master"), Mathf.LinearToDb(_sonidoValue));
+		 AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Sonido"), Mathf.LinearToDb(_sonidoValue));
 
 		 _musicaValue = (float)_configFile.GetValue("Musica", "Volume", 0.0f);
 		 _musicaSlider.Value = _musicaValue;

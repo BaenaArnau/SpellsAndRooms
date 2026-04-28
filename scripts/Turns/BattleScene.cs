@@ -231,7 +231,8 @@ namespace SpellsAndRooms.scripts.Turns
             {
                 Name = "PlayerHpBar",
                 CustomMinimumSize = new Vector2(0, 20),
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                Modulate = Colors.Green
             };
             playerLayout.AddChild(_playerHpBar);
 
@@ -242,7 +243,8 @@ namespace SpellsAndRooms.scripts.Turns
             {
                 Name = "PlayerMpBar",
                 CustomMinimumSize = new Vector2(0, 20),
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+                Modulate = new Color(0.2f, 0.6f, 0.95f)
             };
             playerLayout.AddChild(_playerMpBar);
 
@@ -1170,6 +1172,22 @@ namespace SpellsAndRooms.scripts.Turns
             _playerHpLabel.Text = $"HP: {_player.Health}/{_player.BaseHealth}";
             _playerHpBar.MaxValue = _player.BaseHealth;
             _playerHpBar.Value = _player.Health;
+
+            // Cambiar el color de la barra de vida según el porcentaje
+            float healthPercent = _player.BaseHealth > 0 ? (float)_player.Health / _player.BaseHealth : 0;
+            if (healthPercent >= 0.65f)
+            {
+                _playerHpBar.Modulate = Colors.Green;
+            }
+            else if (healthPercent >= 0.30f)
+            {
+                _playerHpBar.Modulate = new Color(1f, 0.65f, 0f);
+            }
+            else
+            {
+                _playerHpBar.Modulate = Colors.Red;
+            }
+
             _playerMpLabel.Text = $"MP: {_player.Mana}/{_player.BaseMana}";
             _playerMpBar.MaxValue = _player.BaseMana;
             _playerMpBar.Value = _player.Mana;
@@ -1203,6 +1221,22 @@ namespace SpellsAndRooms.scripts.Turns
                     MaxValue = enemy.BaseHealth,
                     Value = enemy.Health
                 };
+
+                // Aplicar color dinámico según el porcentaje de salud del enemigo
+                float healthPercent = enemy.BaseHealth > 0 ? (float)enemy.Health / enemy.BaseHealth : 0;
+                if (healthPercent >= 0.65f)
+                {
+                    hpBar.Modulate = Colors.Green;
+                }
+                else if (healthPercent >= 0.30f)
+                {
+                    hpBar.Modulate = new Color(1f, 0.65f, 0f);
+                }
+                else
+                {
+                    hpBar.Modulate = Colors.Red;
+                }
+
                 enemyPanel.AddChild(hpBar);
 
                 var hpLabel = new Label

@@ -56,6 +56,10 @@ namespace SpellsAndRooms.scripts.map
         private Room _pendingTreasureRoom;
         private CanvasLayer _goldHudLayer;
         private Label _goldHudLabel;
+        private CanvasLayer _healthHudLayer;
+        private Label _healthHudLabel;
+        private CanvasLayer _manaHudLayer;
+        private Label _manaHudLabel;
         private Viewport _cachedViewport;
 
         public override void _Ready()
@@ -125,7 +129,11 @@ namespace SpellsAndRooms.scripts.map
 
             SetupCombatSystems();
             BuildGoldHud();
+            BuildHealthHud();
+            BuildManaHud();
             UpdateGoldHud();
+            UpdateHealthHud();
+            UpdateManaHud();
 
             GenerateAndDisplayMap();
         }
@@ -321,6 +329,124 @@ namespace SpellsAndRooms.scripts.map
             _goldHudLabel.Text = $"Oro: {_player.Gold}";
         }
 
+        private void BuildHealthHud()
+        {
+            if (_healthHudLayer != null)
+                return;
+
+            _healthHudLayer = new CanvasLayer { Name = "HealthHudLayer", Layer = 5 };
+            AddChild(_healthHudLayer);
+
+            var panel = new PanelContainer
+            {
+                Name = "HealthPanel",
+                AnchorLeft = 0.02f,
+                AnchorTop = 0.09f,
+                AnchorRight = 0.16f,
+                AnchorBottom = 0.145f,
+                CustomMinimumSize = new Vector2(140, 30),
+                MouseFilter = Control.MouseFilterEnum.Ignore
+            };
+
+            var style = new StyleBoxFlat
+            {
+                BgColor = new Color(0.10f, 0.05f, 0.05f, 0.88f),
+                BorderColor = new Color(0.95f, 0.20f, 0.20f),
+                BorderWidthLeft = 2,
+                BorderWidthTop = 2,
+                BorderWidthRight = 2,
+                BorderWidthBottom = 2,
+                CornerRadiusTopLeft = 8,
+                CornerRadiusTopRight = 8,
+                CornerRadiusBottomLeft = 8,
+                CornerRadiusBottomRight = 8,
+                ContentMarginLeft = 8,
+                ContentMarginTop = 4,
+                ContentMarginRight = 8,
+                ContentMarginBottom = 4
+            };
+            panel.AddThemeStyleboxOverride("panel", style);
+            _healthHudLayer.AddChild(panel);
+
+            _healthHudLabel = new Label
+            {
+                Name = "HealthLabel",
+                Text = "Vida: 0/0",
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                MouseFilter = Control.MouseFilterEnum.Ignore
+            };
+            _healthHudLabel.AddThemeFontSizeOverride("font_size", 14);
+            panel.AddChild(_healthHudLabel);
+        }
+
+        private void UpdateHealthHud()
+        {
+            if (_healthHudLabel == null || _player == null)
+                return;
+
+            _healthHudLabel.Text = $"Vida: {_player.Health}/{_player.BaseHealth}";
+        }
+
+        private void BuildManaHud()
+        {
+            if (_manaHudLayer != null)
+                return;
+
+            _manaHudLayer = new CanvasLayer { Name = "ManaHudLayer", Layer = 5 };
+            AddChild(_manaHudLayer);
+
+            var panel = new PanelContainer
+            {
+                Name = "ManaPanel",
+                AnchorLeft = 0.02f,
+                AnchorTop = 0.16f,
+                AnchorRight = 0.16f,
+                AnchorBottom = 0.215f,
+                CustomMinimumSize = new Vector2(140, 30),
+                MouseFilter = Control.MouseFilterEnum.Ignore
+            };
+
+            var style = new StyleBoxFlat
+            {
+                BgColor = new Color(0.05f, 0.08f, 0.15f, 0.88f),
+                BorderColor = new Color(0.20f, 0.60f, 0.95f),
+                BorderWidthLeft = 2,
+                BorderWidthTop = 2,
+                BorderWidthRight = 2,
+                BorderWidthBottom = 2,
+                CornerRadiusTopLeft = 8,
+                CornerRadiusTopRight = 8,
+                CornerRadiusBottomLeft = 8,
+                CornerRadiusBottomRight = 8,
+                ContentMarginLeft = 8,
+                ContentMarginTop = 4,
+                ContentMarginRight = 8,
+                ContentMarginBottom = 4
+            };
+            panel.AddThemeStyleboxOverride("panel", style);
+            _manaHudLayer.AddChild(panel);
+
+            _manaHudLabel = new Label
+            {
+                Name = "ManaLabel",
+                Text = "Maná: 0/0",
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                MouseFilter = Control.MouseFilterEnum.Ignore
+            };
+            _manaHudLabel.AddThemeFontSizeOverride("font_size", 14);
+            panel.AddChild(_manaHudLabel);
+        }
+
+        private void UpdateManaHud()
+        {
+            if (_manaHudLabel == null || _player == null)
+                return;
+
+            _manaHudLabel.Text = $"Maná: {_player.Mana}/{_player.BaseMana}";
+        }
+
         private void SetMapVisible(bool visible)
         {
             if (_visualsContainer != null)
@@ -328,6 +454,12 @@ namespace SpellsAndRooms.scripts.map
 
             if (_goldHudLayer != null)
                 _goldHudLayer.Visible = visible;
+
+            if (_healthHudLayer != null)
+                _healthHudLayer.Visible = visible;
+
+            if (_manaHudLayer != null)
+                _manaHudLayer.Visible = visible;
         }
 
         private void GenerateAndDisplayMap()
@@ -613,6 +745,8 @@ namespace SpellsAndRooms.scripts.map
 
             SetMapVisible(true);
             UpdateGoldHud();
+            UpdateHealthHud();
+            UpdateManaHud();
 
             if (_pendingShopRoom != null)
                 AdvanceMapRoute(_pendingShopRoom);
@@ -661,6 +795,8 @@ namespace SpellsAndRooms.scripts.map
 
             SetMapVisible(true);
             UpdateGoldHud();
+            UpdateHealthHud();
+            UpdateManaHud();
 
             if (_pendingCampfireRoom != null)
                 AdvanceMapRoute(_pendingCampfireRoom);
@@ -709,6 +845,8 @@ namespace SpellsAndRooms.scripts.map
 
             SetMapVisible(true);
             UpdateGoldHud();
+            UpdateHealthHud();
+            UpdateManaHud();
 
             if (_pendingTreasureRoom != null)
                 AdvanceMapRoute(_pendingTreasureRoom);
@@ -768,6 +906,8 @@ namespace SpellsAndRooms.scripts.map
             // Mostrar el mapa nuevamente después de la batalla.
             SetMapVisible(true);
             UpdateGoldHud();
+            UpdateHealthHud();
+            UpdateManaHud();
 
             if (!playerWon)
             {

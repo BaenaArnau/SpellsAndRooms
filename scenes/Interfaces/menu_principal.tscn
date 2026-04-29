@@ -27,9 +27,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("1_dnsbu")
 expand_mode = 2
 stretch_mode = 1
-texture = ExtResource("1_dnsbu")
 
 [node name="Pergamino" type="TextureRect" parent="." unique_id=1304561978]
 texture_filter = 1
@@ -95,7 +95,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.5803922)
 
-[node name="HBoxContainer" type="VBoxContainer" parent="." unique_id=1675854]
+[node name="Botones" type="VBoxContainer" parent="." unique_id=1675854]
 texture_filter = 1
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 1
@@ -112,34 +112,34 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 18
 
-[node name="Start" type="Button" parent="HBoxContainer" unique_id=1319276902]
+[node name="Jugar" type="Button" parent="Botones" unique_id=1319276902]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("6_vi25f")
 theme_override_fonts/font = ExtResource("3_7nr1k")
-text = "START"
+text = "JUGAR"
 
-[node name="Setting" type="Button" parent="HBoxContainer" unique_id=688248831]
+[node name="Ajustes" type="Button" parent="Botones" unique_id=688248831]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("6_vi25f")
 theme_override_fonts/font = ExtResource("3_7nr1k")
 theme_override_font_sizes/font_size = 32
-text = "SETTING"
+text = "AJUSTES"
 
-[node name="Exit" type="Button" parent="HBoxContainer" unique_id=621989983]
+[node name="Salir" type="Button" parent="Botones" unique_id=621989983]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("6_vi25f")
-text = "EXIT
+text = "SALIR
 "
 
 [node name="Settings" parent="." unique_id=1413165098 instance=ExtResource("7_vi25f")]
 visible = false
 
-[connection signal="pressed" from="HBoxContainer/Start" to="." method="onStartPressed"]
-[connection signal="pressed" from="HBoxContainer/Setting" to="." method="onSettingPressed"]
-[connection signal="pressed" from="HBoxContainer/Exit" to="." method="onExitPressed"]
+[connection signal="pressed" from="Botones/Jugar" to="." method="onStartPressed"]
+[connection signal="pressed" from="Botones/Ajustes" to="." method="onSettingPressed"]
+[connection signal="pressed" from="Botones/Salir" to="." method="onExitPressed"]

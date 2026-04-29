@@ -58,15 +58,15 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -121.0
+offset_left = -147.0
 offset_top = -131.0
-offset_right = 179.0
+offset_right = 153.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(2.4065375e-08, 0.25036317, 0.28748178, 1)
 theme_override_fonts/font = ExtResource("3_je6uc")
 theme_override_font_sizes/font_size = 70
-text = "PAUSED
+text = "PAUDADA
 "
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1042054934]
@@ -94,39 +94,39 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 18
 
-[node name="Continue" type="Button" parent="HBoxContainer" unique_id=1939745510]
+[node name="Continuar" type="Button" parent="HBoxContainer" unique_id=1939745510]
 layout_mode = 2
 theme = ExtResource("4_pwxya")
-text = "CONTINUE
+text = "CONTINUAR
 "
 
-[node name="Restart" type="Button" parent="HBoxContainer" unique_id=410678843]
+[node name="Reinciar" type="Button" parent="HBoxContainer" unique_id=410678843]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("4_pwxya")
 theme_override_fonts/font = ExtResource("3_je6uc")
-text = "RESTART
+text = "REINICIAR
 "
 
-[node name="Setting" type="Button" parent="HBoxContainer" unique_id=1424762078]
+[node name="Ajustes" type="Button" parent="HBoxContainer" unique_id=1424762078]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("4_pwxya")
 theme_override_fonts/font = ExtResource("3_je6uc")
 theme_override_font_sizes/font_size = 32
-text = "SETTING"
+text = "AJUSTES"
 
-[node name="Exit" type="Button" parent="HBoxContainer" unique_id=1517401313]
+[node name="Salir" type="Button" parent="HBoxContainer" unique_id=1517401313]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("4_pwxya")
-text = "EXIT
+text = "SALIR
 "
 
-[connection signal="pressed" from="HBoxContainer/Continue" to="." method="onContinuePressed"]
-[connection signal="pressed" from="HBoxContainer/Restart" to="." method="onRestartPressed"]
-[connection signal="pressed" from="HBoxContainer/Setting" to="." method="onSettingPressed"]
-[connection signal="pressed" from="HBoxContainer/Exit" to="." method="onExitPressed"]
+[connection signal="pressed" from="HBoxContainer/Continuar" to="." method="onContinuePressed"]
+[connection signal="pressed" from="HBoxContainer/Reinciar" to="." method="onRestartPressed"]
+[connection signal="pressed" from="HBoxContainer/Ajustes" to="." method="onSettingPressed"]
+[connection signal="pressed" from="HBoxContainer/Salir" to="." method="onExitPressed"]

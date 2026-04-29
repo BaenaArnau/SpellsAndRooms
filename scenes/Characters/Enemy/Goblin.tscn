@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://6jusvv7devbs" path="res://assets/Characters/Enemy/BlackGoblin.png" id="1_yx55g"]
 [ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="2_jeht5"]
+[ext_resource type="AudioStream" uid="uid://mtss3i8hswpa" path="res://assets/sound/gorpeSonido.mp3" id="3_jeht5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lfbxf"]
 atlas = ExtResource("1_yx55g")
@@ -45,6 +46,7 @@ autoplay = "Idle"
 script = ExtResource("2_jeht5")
 Difficulty = 1
 MoneyLoot = 8
+AttackAudioStream = ExtResource("3_jeht5")
 CharacterName = "Dark Goblin"
 BaseHealth = 16
 BaseMana = 8

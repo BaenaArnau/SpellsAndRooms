@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://livbfibiswin" path="res://assets/icons/MarcoMagoNormalDis.png" id="10_yqc31"]
 [ext_resource type="Theme" uid="uid://cspr6p2va4ryf" path="res://theme/Button_Theme.tres" id="11_pbnf7"]
 [ext_resource type="Texture2D" uid="uid://b7ymx5nb888p3" path="res://assets/Map/DungeonBackground.png" id="12_ftqje"]
+[ext_resource type="Texture2D" uid="uid://b5evqxvketta0" path="res://assets/icons/ButtonStyle.png" id="12_y6eya"]
 
 [node name="SeleccionPersonajes" type="CanvasLayer" unique_id=2126597733 node_paths=PackedStringArray("_caballeroButton", "_magoButton")]
 script = ExtResource("1_h47sb")
@@ -134,6 +135,52 @@ texture_hover = ExtResource("9_pbnf7")
 texture_disabled = ExtResource("10_yqc31")
 texture_focused = ExtResource("9_pbnf7")
 stretch_mode = 5
+
+[node name="Popup" type="Popup" parent="Personajes/Personajes/Mago" unique_id=1472406440]
+process_mode = 3
+process_priority = 10
+transparent_bg = true
+oversampling = false
+oversampling_override = 1.0
+initial_position = 4
+size = Vector2i(300, 200)
+visible = true
+transparent = true
+
+[node name="TextureRect" type="TextureRect" parent="Personajes/Personajes/Mago/Popup" unique_id=338278884]
+texture_filter = 1
+anchors_preset = -1
+anchor_right = 0.72
+anchor_bottom = 0.36
+offset_left = 11.0
+offset_top = -5.0
+offset_right = 11.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_y6eya")
+
+[node name="MarginContainer" type="MarginContainer" parent="Personajes/Personajes/Mago/Popup/TextureRect" unique_id=1650629173]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="Personajes/Personajes/Mago/Popup/TextureRect/MarginContainer" unique_id=2022892354]
+texture_filter = 1
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_3wbcr")
+theme_override_font_sizes/font_size = 12
+text = "Este personaje se desbloquea
+ cuando hayas pasado almenos
+ una vez el juego"
 
 [node name="Botones" type="MarginContainer" parent="." unique_id=580934459]
 texture_filter = 1

@@ -43,12 +43,13 @@ namespace SpellsAndRooms.scripts.Characters
 		/// <summary>Salud/Maná mínimo permitido.</summary>
 		private const int MIN_STAT = 0;
 
-		/// <summary>Salud/Maná mínimo inicial para un personaje vivo.</summary>
+		/// <summary>Daño mínimo inicial para un personaje vivo.</summary>
 		private const int MIN_INITIAL_STAT = 1;
 
-		private AudioStreamPlayer2D _enemyAttackAudio;
-
 		// ==================== Propiedades Exportadas ====================
+
+		/// <summary>Audio de ataque del personaje.</summary>
+		[Export] public AudioStream AttackAudioStream;
 
 		/// <summary>Nombre del personaje.</summary>
 		[Export] public string CharacterName;
@@ -78,6 +79,9 @@ namespace SpellsAndRooms.scripts.Characters
 
 		/// <summary>Lista de habilidades del personaje.</summary>
 		private readonly List<Skill> _skills = new List<Skill>();
+
+		/// <summary>Reproductor de audio para efectos de sonido.</summary>
+		private AudioStreamPlayer2D _attackAudio;
 
 		// ==================== Propiedades Públicas ====================
 
@@ -112,14 +116,44 @@ namespace SpellsAndRooms.scripts.Characters
 		// ==================== Métodos ====================
 		public override void _Ready()
 		{
-			_enemyAttackAudio = new AudioStreamPlayer2D();
-			AddChild(_enemyAttackAudio);
+			// Crear el reproductor de audio si no existe
+			if (_attackAudio == null)
+			{
+				_attackAudio = new AudioStreamPlayer2D();
+				AddChild(_attackAudio);
+				
+				// Crear el bus "Sonido" si no existe
+				if (!BusExists("Sonido"))
+				{
+					int newBusIndex = AudioServer.BusCount;
+					AudioServer.AddBus(newBusIndex);
+					AudioServer.SetBusName(newBusIndex, "Sonido");
+				}
+				
+				// Asignar el bus al reproductor de audio
+				_attackAudio.Bus = "Sonido";
+			}
 
-    // Configuramos las propiedades
-    	_enemyAttackAudio.Bus = "Sonido";
-   		_enemyAttackAudio.Stream = GD.Load<AudioStream>("res://assets/sound/gorpeSonido.mp3");
-   		_enemyAttackAudio.VolumeDb = 0.0f;
+			// Asignar el stream de audio si está definido
+			if (AttackAudioStream != null)
+			{
+				_attackAudio.Stream = AttackAudioStream;
+			}
+		}
 
+		/// <summary>
+		/// Verifica si un bus de audio existe.
+		/// </summary>
+		/// <param name="busName">Nombre del bus a verificar.</param>
+		/// <returns>true si el bus existe; false en caso contrario.</returns>
+		private bool BusExists(string busName)
+		{
+			for (int i = 0; i < AudioServer.BusCount; i++)
+			{
+				if (AudioServer.GetBusName(i) == busName)
+					return true;
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -131,7 +165,15 @@ namespace SpellsAndRooms.scripts.Characters
 		{
 			int safeDamage = Mathf.Max(MIN_STAT, amount);
 			Health -= safeDamage;
-			_enemyAttackAudio.Play();
+			
+			// Reproducir el sonido de ataque si está disponible
+			if (_attackAudio != null && _attackAudio.Stream != null)
+			{
+				_attackAudio.Play();
+			}
+			else{
+				GD.Print("No se pudo reproducir el sonido de ataque: Stream no asignado.");
+			}
 		}
 
 		/// <summary>

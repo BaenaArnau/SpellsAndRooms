@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="1_d108g"]
 [ext_resource type="Texture2D" uid="uid://b7wrwc3whi1td" path="res://assets/Characters/Enemy/Esqueleto.png" id="1_i1tv0"]
+[ext_resource type="AudioStream" uid="uid://mtss3i8hswpa" path="res://assets/sound/gorpeSonido.mp3" id="3_e2iom"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e2iom"]
 atlas = ExtResource("1_i1tv0")
@@ -45,6 +46,7 @@ autoplay = "Idle"
 script = ExtResource("1_d108g")
 Difficulty = 2
 MoneyLoot = 12
+AttackAudioStream = ExtResource("3_e2iom")
 CharacterName = "Skeleton"
 BaseHealth = 24
 Damage = 6

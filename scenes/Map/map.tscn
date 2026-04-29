@@ -66,4 +66,5 @@ visible = false
 [node name="BackRoundMusic" type="AudioStreamPlayer" parent="." unique_id=2081038833]
 stream = ExtResource("10_dmbmi")
 autoplay = true
+bus = &"Musica"
 parameters/looping = true

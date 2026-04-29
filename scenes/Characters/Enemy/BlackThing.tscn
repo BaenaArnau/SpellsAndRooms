@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cbxixav51pjv4" path="res://assets/enemies/BlackThink.png" id="1_altb5"]
 [ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="2_rgmwg"]
+[ext_resource type="AudioStream" uid="uid://mtss3i8hswpa" path="res://assets/sound/gorpeSonido.mp3" id="3_rgmwg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rgmwg"]
 atlas = ExtResource("1_altb5")
@@ -45,6 +46,7 @@ autoplay = "Idle"
 script = ExtResource("2_rgmwg")
 Difficulty = 5
 MoneyLoot = 60
+AttackAudioStream = ExtResource("3_rgmwg")
 CharacterName = "Black Thing"
 BaseHealth = 70
 BaseMana = 60

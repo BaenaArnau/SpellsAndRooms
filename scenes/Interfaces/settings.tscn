@@ -229,7 +229,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme = ExtResource("3_4ts72")
-text = "APLICAR"
+text = "Aplicar"
 
 [connection signal="toggled" from="MarginContainer/VBoxContainer/OpcionesResoluciones/CheckBox" to="." method="fullScreenActive"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/HSliderSonido" to="." method="onSonidoChanged"]

@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bl7rt2a1pdhte" path="res://assets/Characters/Player/MagoAzul.png" id="1_qjxyf"]
 [ext_resource type="Script" uid="uid://dw3c12gywkoyk" path="res://scripts/Characters/Player.cs" id="2_dyaac"]
+[ext_resource type="AudioStream" uid="uid://mtss3i8hswpa" path="res://assets/sound/gorpeSonido.mp3" id="3_dyaac"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0x520"]
 atlas = ExtResource("1_qjxyf")
@@ -85,6 +86,7 @@ sprite_frames = SubResource("SpriteFrames_x1rou")
 animation = &"Idle"
 autoplay = "Idle"
 script = ExtResource("2_dyaac")
+AttackAudioStream = ExtResource("3_dyaac")
 CharacterName = "Wizard"
 BaseHealth = 60
 BaseMana = 150

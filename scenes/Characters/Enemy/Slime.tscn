@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c4h6sbx8l1qam" path="res://scripts/Characters/Enemy.cs" id="1_580nj"]
 [ext_resource type="Texture2D" uid="uid://74p06by4sr6i" path="res://assets/Characters/Enemy/Slime.png" id="1_db02x"]
+[ext_resource type="AudioStream" uid="uid://mtss3i8hswpa" path="res://assets/sound/gorpeSonido.mp3" id="3_2m1j5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2m1j5"]
 atlas = ExtResource("1_db02x")
@@ -45,6 +46,7 @@ autoplay = "Idle"
 script = ExtResource("1_580nj")
 Difficulty = 3
 MoneyLoot = 18
+AttackAudioStream = ExtResource("3_2m1j5")
 CharacterName = "Slime"
 BaseHealth = 20
 BaseMana = 30

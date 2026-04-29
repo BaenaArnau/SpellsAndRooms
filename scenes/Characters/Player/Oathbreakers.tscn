@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://urs3oj22fc0u" path="res://assets/Characters/Player/CaballeroNegro.png" id="1_sp6gf"]
 [ext_resource type="Script" uid="uid://dw3c12gywkoyk" path="res://scripts/Characters/Player.cs" id="2_j6agc"]
+[ext_resource type="AudioStream" uid="uid://mtss3i8hswpa" path="res://assets/sound/gorpeSonido.mp3" id="3_j6agc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_38fga"]
 atlas = ExtResource("1_sp6gf")
@@ -72,21 +73,16 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Oathbreakers" type="AnimatedSprite2D" unique_id=1997738457 node_paths=PackedStringArray("_audioPlayer", "_audioEnemy")]
+[node name="Oathbreakers" type="AnimatedSprite2D" unique_id=1997738457]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_1xss4")
 animation = &"Idle"
 autoplay = "Idle"
 script = ExtResource("2_j6agc")
-_audioPlayer = NodePath("AttackSoundPlayer")
-_audioEnemy = NodePath("AttackSoundEnemy")
+AttackAudioStream = ExtResource("3_j6agc")
 CharacterName = "Oathbreakers"
 BaseHealth = 90
 BaseMana = 40
 Damage = 15
 DamageResistance = 3
 DamageWeakness = 4
-
-[node name="AttackSoundPlayer" type="AudioStreamPlayer2D" parent="." unique_id=1268769199]
-
-[node name="AttackSoundEnemy" type="AudioStreamPlayer2D" parent="." unique_id=706588725]

@@ -15,6 +15,11 @@ run/main_scene="uid://bkjfllkri27iq"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="uid://bxk1af1oy5kh3"
 
+[display]
+
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
+
 [dotnet]
 
 project/assembly_name="SpellsAndRooms"

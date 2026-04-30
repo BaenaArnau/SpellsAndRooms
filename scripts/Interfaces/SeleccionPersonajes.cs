@@ -12,7 +12,7 @@ public partial class SeleccionPersonajes : CanvasLayer
 	private string _selectedCharacter = "";
 	public static bool _magoIsUnlocked = false;
 
-	private const string SETTINGS_FILE_PATH = "res://configFile/settings.cfg";
+	private const string SETTINGS_FILE_PATH = "res://configFile/unclok.cfg";
 	private ConfigFile _configFile = new ConfigFile();
 
 	

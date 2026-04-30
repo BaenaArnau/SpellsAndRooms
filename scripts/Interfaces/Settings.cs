@@ -102,9 +102,10 @@ public partial class Settings : CanvasLayer
 		Error err = _configFile.Load(SETTINGS_FILE_PATH);
 		if (err != Error.Ok)
 		{
-			GD.PrintErr("Error al cargar la configuración: " + err);
-			return;
+			GD.Print("Archivo de configuración no encontrado o no válido. Se creará uno nuevo con valores por defecto.");
+			InitializeDefaultSettings();
 		}
+
 		// Cargar pantalla completa
 		isFullScreen = (bool)_configFile.GetValue("Display", "FullScreen", false);
 		_settingsData.IsFullScreen = isFullScreen;
@@ -122,6 +123,19 @@ public partial class Settings : CanvasLayer
 		_settingsData.MusicaVolume = _musicaValue;
 		_musicaSlider.Value = _musicaValue;
 		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Musica"), Mathf.LinearToDb(_musicaValue));
+	}
+
+	private void InitializeDefaultSettings()
+	{
+		_configFile.SetValue("Display", "FullScreen", false);
+		_configFile.SetValue("Sonido", "Volume", 0.5f);
+		_configFile.SetValue("Musica", "Volume", 0.5f);
+
+		Error saveErr = _configFile.Save(SETTINGS_FILE_PATH);
+		if (saveErr != Error.Ok)
+		{
+			GD.PrintErr("Error al crear el archivo de configuración por defecto: " + saveErr);
+		}
 	}
 
 }

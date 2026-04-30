@@ -21,19 +21,7 @@ public partial class Settings : CanvasLayer
 	}
 
 	private SettingsData _settingsData = new SettingsData();
-	public override void _Ready()
-    {
-		// Guardar los valores actuales después de cargar
-		isFullScreen = _fullScreenCheckBox.ButtonPressed;
-		_settingsData.IsFullScreen = isFullScreen;
 
-		_sonidoValue = (float)_sonidoSlider.Value;
-		_settingsData.SonidoVolume = _sonidoValue;
-
-		_musicaValue = (float)_musicaSlider.Value;
-		_settingsData.MusicaVolume = _musicaValue;
-        loadSettings();
-    }
 	public void onVolverPressed()
 	{
 		_fullScreenCheckBox.ButtonPressed = isFullScreen;
@@ -107,19 +95,19 @@ public partial class Settings : CanvasLayer
 		}
 
 		// Cargar pantalla completa
-		isFullScreen = (bool)_configFile.GetValue("Display", "FullScreen", false);
+		isFullScreen = (bool)_configFile.GetValue("Display", "FullScreen");
 		_settingsData.IsFullScreen = isFullScreen;
 		_fullScreenCheckBox.ButtonPressed = isFullScreen;
 		DisplayServer.WindowSetMode(isFullScreen ? DisplayServer.WindowMode.ExclusiveFullscreen : DisplayServer.WindowMode.Windowed);
 
 		// Cargar volumen de sonido
-		_sonidoValue = (float)_configFile.GetValue("Sonido", "Volume", 0.5f);
+		_sonidoValue = (float)_configFile.GetValue("Sonido", "Volume");
 		_settingsData.SonidoVolume = _sonidoValue;
 		_sonidoSlider.Value = _sonidoValue;
 		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Sonido"), Mathf.LinearToDb(_sonidoValue));
 
 		// Cargar volumen de música
-		_musicaValue = (float)_configFile.GetValue("Musica", "Volume", 0.5f);
+		_musicaValue = (float)_configFile.GetValue("Musica", "Volume");
 		_settingsData.MusicaVolume = _musicaValue;
 		_musicaSlider.Value = _musicaValue;
 		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex("Musica"), Mathf.LinearToDb(_musicaValue));
@@ -137,5 +125,19 @@ public partial class Settings : CanvasLayer
 			GD.PrintErr("Error al crear el archivo de configuración por defecto: " + saveErr);
 		}
 	}
+
+		public override void _Ready()
+    {
+		// Guardar los valores actuales después de cargar
+		isFullScreen = _fullScreenCheckBox.ButtonPressed;
+		_settingsData.IsFullScreen = isFullScreen;
+
+		_sonidoValue = (float)_sonidoSlider.Value;
+		_settingsData.SonidoVolume = _sonidoValue;
+
+		_musicaValue = (float)_musicaSlider.Value;
+		_settingsData.MusicaVolume = _musicaValue;
+        loadSettings();
+    }
 
 }

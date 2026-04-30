@@ -9,15 +9,19 @@
 [ext_resource type="PackedScene" uid="uid://dxyhjjv3qn8yb" path="res://scenes/Turns/Shop.tscn" id="6_shop"]
 [ext_resource type="PackedScene" uid="uid://dxad8258k6vy2" path="res://scenes/Interfaces/menu_pausa.tscn" id="8_57bgo"]
 [ext_resource type="Texture2D" uid="uid://blyktmvglr17a" path="res://assets/Map/Map.png" id="9_m76i7"]
+[ext_resource type="PackedScene" uid="uid://csb3jibyjau2q" path="res://scenes/Interfaces/settings.tscn" id="10_5ugwt"]
 [ext_resource type="AudioStream" uid="uid://c8o34mxqr1nah" path="res://assets/sound/SpeedAmdRoomsBackGroundSound.mp3" id="10_dmbmi"]
 
-[node name="Map" type="Node2D" unique_id=74220101]
+[node name="Map" type="Node2D" unique_id=74220101 node_paths=PackedStringArray("_settings", "_menuPausa")]
+z_index = 1
 script = ExtResource("1_d6mms")
 MapRoomScene = ExtResource("2_exngo")
 MapLineScene = ExtResource("3_15h2t")
 ShopScenePacked = ExtResource("6_shop")
 CampfireScenePacked = ExtResource("4_4n8f8")
 TreasureScenePacked = ExtResource("5_i2v3j")
+_settings = NodePath("menu_pausa/Settings2")
+_menuPausa = NodePath("menu_pausa")
 MapZoom = 3.0
 
 [node name="Visuals" type="Node2D" parent="." unique_id=809049232]
@@ -60,7 +64,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14550626, 0.14142448, 0.14244744, 0.53333336)
 
-[node name="menu_pausa" parent="." unique_id=700777700 instance=ExtResource("8_57bgo")]
+[node name="menu_pausa" parent="." unique_id=700777700 node_paths=PackedStringArray("_settings") instance=ExtResource("8_57bgo")]
+visible = false
+_settings = NodePath("Settings2")
+
+[node name="Settings2" parent="menu_pausa" unique_id=1413165098 instance=ExtResource("10_5ugwt")]
+process_mode = 2
+layer = 2
 visible = false
 
 [node name="BackRoundMusic" type="AudioStreamPlayer" parent="." unique_id=2081038833]

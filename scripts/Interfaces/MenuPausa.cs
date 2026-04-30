@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 public partial class MenuPausa : CanvasLayer
 {
 	[Export] private CanvasLayer _settings;
+	private Settings _settingsScript;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
     {
@@ -12,7 +13,11 @@ public partial class MenuPausa : CanvasLayer
 			_settings = GetNodeOrNull<CanvasLayer>("Settings");
 
 		if (_settings != null)
+		{
 			_settings.Visible = false;
+
+		}
+
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -54,6 +59,7 @@ public partial class MenuPausa : CanvasLayer
 	}	
 	private void onExitPressed()
 	{
+
 		GetTree().Paused = false;
 		GetTree().ChangeSceneToFile("res://scenes/Interfaces/menu_principal.tscn");
 	}

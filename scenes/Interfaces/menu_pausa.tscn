@@ -5,17 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://bj6vxcfruhnta" path="res://assets/icons/FondoTitulo.png" id="2_pwxya"]
 [ext_resource type="FontFile" uid="uid://5lr8h01ai6yx" path="res://assets/font/upheaval/upheavtt.ttf" id="3_je6uc"]
 [ext_resource type="Theme" uid="uid://cspr6p2va4ryf" path="res://theme/Button_Theme.tres" id="4_pwxya"]
-[ext_resource type="PackedScene" uid="uid://csb3jibyjau2q" path="res://scenes/Interfaces/settings.tscn" id="5_je6uc"]
 
 [node name="menu_pausa" type="CanvasLayer" unique_id=700777700 node_paths=PackedStringArray("_settings")]
 process_mode = 2
 script = ExtResource("1_im7n4")
-_settings = NodePath("Settings")
-
-[node name="Settings" parent="." unique_id=1413165098 instance=ExtResource("5_je6uc")]
-process_priority = 1
-layer = 2
-visible = false
+_settings = NodePath("")
 
 [node name="Pergamino" type="TextureRect" parent="." unique_id=1983698291]
 texture_filter = 1

@@ -15,6 +15,7 @@ namespace SpellsAndRooms.scripts.map
         [Export] public PackedScene ShopScenePacked;
         [Export] public PackedScene CampfireScenePacked;
         [Export] public PackedScene TreasureScenePacked;
+        [Export] private CanvasLayer _settings;
         public static string SelectedPlayerScenePath = "res://scenes/Characters/Player/Oathbreakers.tscn";
         [Export] private CanvasLayer _menuPausa;
         [Export(PropertyHint.Range, "1.0,3.0,0.05")] public float MapZoom = 1.7f;
@@ -126,6 +127,24 @@ namespace SpellsAndRooms.scripts.map
 
             if (_visualsContainer != null)
                 _visualsContainer.Scale = Vector2.One * MapZoom;
+
+            if(_settings != null)
+            {
+                _settings.Visible = false;
+                Settings settingScript = _settings as Settings;
+                if (settingScript != null)
+                {
+                    settingScript.loadSettings();
+                }
+                else
+                {
+                    GD.PrintErr("No se pudo obtener el script Settings de la CanvasLayer");
+                }
+            }
+            else
+            {
+                GD.PrintErr("_settings no está asignado en el inspector");
+            }
 
             SetupCombatSystems();
             BuildGoldHud();

@@ -13,20 +13,9 @@ public partial class MenuPrincipal : Control
 		// Obtener el script de Settings de la CanvasLayer exportada
 		if (_settings != null)
 		{
-			_settingsScript = _settings as Settings;
-			if (_settingsScript != null)
-			{
-				_settingsScript.loadSettings();
-			}
-			else
-			{
-				GD.PrintErr("No se pudo obtener el script Settings de la CanvasLayer");
-			}
 			_settings.Visible = false;
-		}
-		else
-		{
-			GD.PrintErr("_settings no está asignado en el inspector");
+			_settingsScript = _settings as Settings;
+			_settingsScript.loadSettings();
 		}
     }
 

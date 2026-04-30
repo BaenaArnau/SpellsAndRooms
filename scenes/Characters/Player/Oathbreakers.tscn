@@ -77,7 +77,6 @@ animations = [{
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_1xss4")
 animation = &"Idle"
-autoplay = "Idle"
 script = ExtResource("2_j6agc")
 AttackAudioStream = ExtResource("3_j6agc")
 CharacterName = "Oathbreakers"

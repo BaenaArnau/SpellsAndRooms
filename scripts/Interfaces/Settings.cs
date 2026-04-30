@@ -105,7 +105,6 @@ public partial class Settings : CanvasLayer
 			GD.PrintErr("Error al cargar la configuración: " + err);
 			return;
 		}
-		 
 		// Cargar pantalla completa
 		isFullScreen = (bool)_configFile.GetValue("Display", "FullScreen", false);
 		_settingsData.IsFullScreen = isFullScreen;

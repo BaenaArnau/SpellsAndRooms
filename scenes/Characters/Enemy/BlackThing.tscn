@@ -40,6 +40,7 @@ animations = [{
 
 [node name="BlackThing" type="AnimatedSprite2D" unique_id=554901944]
 texture_filter = 1
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_qak7y")
 animation = &"Idle"
 autoplay = "Idle"

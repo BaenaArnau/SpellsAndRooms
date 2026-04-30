@@ -166,7 +166,23 @@ namespace SpellsAndRooms.scripts.Turns
         private void RefreshUi()
         {
             if (_isFinalBossVictory)
+            {
                 SeleccionPersonajes.UnlockMago(true);
+             string SETTINGS_FILE_PATH = "res://configFile/settings.cfg";
+	         ConfigFile _configFile = new ConfigFile();
+                _configFile.SetValue("Unlocks", "Mago", true);
+                Error err = _configFile.Save(SETTINGS_FILE_PATH);
+                if (err != Error.Ok)
+                {
+                    GD.PrintErr("Error al guardar la configuración: " + err);
+                }
+                else
+                {
+                    GD.Print("Mago desbloqueado y configuración guardada correctamente.");
+                }
+
+                
+            }
 
             if (_player == null)
                 return;

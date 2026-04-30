@@ -5,12 +5,29 @@ public partial class MenuPrincipal : Control
 {
 
 	[Export] private CanvasLayer _settings;
+
+	private Settings _settingsScript;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
     {
-        if (_settings != null)
-            _settings = GetNode<CanvasLayer>("Settings");
-        _settings.Visible = false;
+		// Obtener el script de Settings de la CanvasLayer exportada
+		if (_settings != null)
+		{
+			_settingsScript = _settings as Settings;
+			if (_settingsScript != null)
+			{
+				_settingsScript.loadSettings();
+			}
+			else
+			{
+				GD.PrintErr("No se pudo obtener el script Settings de la CanvasLayer");
+			}
+			_settings.Visible = false;
+		}
+		else
+		{
+			GD.PrintErr("_settings no está asignado en el inspector");
+		}
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
